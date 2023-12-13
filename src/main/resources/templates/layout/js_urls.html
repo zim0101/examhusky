@@ -1,0 +1,19 @@
+<div xmlns:th="http://www.thymeleaf.org">
+    <script th:src="@{/webjars/popper.js/2.9.2/umd/popper.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.js}"></script>
+    <script th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.js}"></script>
+    <script>
+        $(document).ready(function() {
+            $( ".date-selector" ).datepicker({
+                dateFormat: "dd/mm/yy",
+                showButtonPanel: true,
+                changeMonth: true,
+                changeYear: true,
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                yearRange: "-60:+20"
+            });
+        });
+    </script>
+</div>

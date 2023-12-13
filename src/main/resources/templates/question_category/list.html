@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:insert="layout/header"></th:block>
+<body>
+<th:block th:insert="~{layout/navbar}"></th:block>
+<div class="container-fluid">
+    <div class="row">
+        <th:block th:insert="~{layout/sidebar}"></th:block>
+        <div class="content col-sm min-vh-100">
+            <!-- content -->
+            <br>
+            <div class="content-header row align-items-center">
+                <div class="col-auto col-md-10 col-xl-10 px-sm-10">
+                    <h6>Question Category</h6>
+                </div>
+                <div class="col-auto col-md-2 col-xl-2">
+                    <a th:href="@{/question_category/new}" type="button"
+                       class="btn btn-outline-success">Create</a>
+                </div>
+            </div>
+            <hr>
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-12">
+                    <form th:action="@{/question_category}">
+                        <div class="row">
+                            <div class="col-md-2 form-group">
+                                <label for="sortField">Field</label>
+                                <select name="sortField" id="sortField" class="form-control">
+                                    <option
+                                            th:selected="${session.containsKey('sortField') && session.sortField == 'title'}"
+                                            value="title">
+                                        Title
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label for="orderBy">Order By</label>
+                                <select name="orderBy" id="orderBy" class="form-control">
+                                    <option th:value="${null}">N/A</option>
+                                    <option
+                                            th:selected="${session.containsKey('orderBy')
+                                && session.orderBy != null
+                                && session.orderBy == 'asc'}"
+                                            value="asc">
+                                        Ascending</option>
+                                    <option
+                                            th:selected="${session.containsKey('orderBy')
+                                && session.orderBy != null
+                                && session.orderBy == 'desc'}"
+                                            value="desc">Descending</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label for="submitButton">Sort List</label>
+                                <input id="submitButton" type="submit" class="btn btn-outline-success form-control">
+                            </div>
+                        </div>
+                    </form>
+                    <br>
+                    <br>
+                </div>
+            </div>
+
+            <div>
+                <table class="table" id="questionCategoryTable">
+                    <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Disabled</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="questionCategory : ${questionCategoryList}">
+                        <td th:text="${questionCategory.getTitle()}"></td>
+                        <td th:text="${questionCategory.getDisabled()}"></td>
+                        <td >
+                            <div class="row d-flex justify-content-end">
+                                <div class="col-1" th:if="${questionCategory.disabled}">
+                                    <form action="#"
+                                          th:object="${questionCategory}"
+                                          th:action="@{'/question_category/{id}/enable'(id=${questionCategory.id})}"
+                                          th:method="put"
+                                          onsubmit="return confirm('Do you really want to enable?');">
+                                        <button type="submit" class="btn btn-outline-success">
+                                            <i class="far fa-check-square"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="col-1" th:unless="${questionCategory.disabled}">
+                                    <form action="#"
+                                          th:object="${questionCategory}"
+                                          th:action="@{'/question_category/{id}/disable'(id=${questionCategory.id})}"
+                                          th:method="put"
+                                          onsubmit="return confirm('Do you really want to disable?');">
+                                        <button type="submit" class="btn btn-outline-warning">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="col-1">
+                                    <a class="btn btn-outline-info"
+                                       th:href="@{'/question_category/{id}'(id=${questionCategory.id})}">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                                <div class="col-1">
+                                    <form action="#"
+                                          th:action="@{'/question_category/{id}'(id=${questionCategory.id})}"
+                                          th:method="delete"
+                                          onsubmit="return confirm('Do you really want to delete?');">
+                                        <button type="submit" class="btn btn-outline-danger">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="col-10"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- questionCategoryList pagination -->
+                <nav aria-label="Pagination" th:if="${questionCategoryList.totalPages gt 0}">
+                    <ul class="pagination justify-content-center font-weight-bold">
+                        <li class="page-item" th:classappend="${questionCategoryList.number eq 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{'/question_category?page={id}'(id=${questionCategoryList.number lt 2 ? 1 : questionCategoryList.number})}"
+                               aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${i eq questionCategoryList.number + 1} ? 'active'"
+                            th:each="i : ${#numbers.sequence( 1, questionCategoryList.totalPages, 1)}">
+                            <a class="page-link"
+                               th:href="@{'/question_category?page={id}'(id=${i})}"
+                               th:text="${i}"
+                               th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${questionCategoryList.number + 1 eq questionCategoryList.totalPages} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{'/question_category?page={id}'(id=${questionCategoryList.number + 2})}"
+                               aria-label="Next" title="Next Page" data-toggle="tooltip">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:insert="~{layout/js_urls}"></th:block>
+</body>
+</html>

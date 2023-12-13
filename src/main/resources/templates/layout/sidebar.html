@@ -1,0 +1,49 @@
+<div class="col-sm-auto bg-light sticky-top" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <div class="d-flex flex-sm-column flex-row flex-nowrap bg-light align-items-center sticky-top">
+        <ul class="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-center align-items-center">
+            <div sec:authorize="hasRole('ADMIN')">
+                <li>
+                    <a th:href="@{/admin/dashboard}" class="nav-link py-3 px-2" title=""
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="right" data-bs-original-title="Dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/question_category}" class="nav-link py-3 px-2" title=""
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="right" data-bs-original-title="Question Category">
+                        <i class="fas fa-swatchbook"></i>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/question}" class="nav-link py-3 px-2" title=""
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="right" data-bs-original-title="Question">
+                        <i class="fas fa-book-open"></i>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/admin/dashboard}" class="nav-link py-3 px-2" title=""
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="right" data-bs-original-title="Exam">
+                        <i class="fas fa-laptop-code"></i>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/admin/dashboard}" class="nav-link py-3 px-2" title=""
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="right" data-bs-original-title="Candidate">
+                        <i class="fas fa-user-graduate"></i>
+                    </a>
+                <li>
+                    <a th:href="@{/examiner}" class="nav-link py-3 px-2" title=""
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="right" data-bs-original-title="Examiner">
+                        <i class="fas fa-book-reader"></i>
+                    </a>
+                </li>
+            </div>
+        </ul>
+    </div>
+</div>

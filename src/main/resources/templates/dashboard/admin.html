@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:insert="layout/header"></th:block>
+<body>
+<th:block th:insert="~{layout/navbar}"></th:block>
+<div class="container-fluid">
+    <div class="row">
+        <th:block th:insert="~{layout/sidebar}"></th:block>
+        <div class="col-sm p-3 min-vh-100">
+            <!-- content -->
+        </div>
+    </div>
+</div>
+<th:block th:insert="~{layout/js_urls}"></th:block>
+</body>
+</html>

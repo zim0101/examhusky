@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:insert="layout/header"></th:block>
+<body>
+<th:block th:insert="~{layout/navbar}"></th:block>
+<div class="container-fluid">
+    <div class="row">
+        <th:block th:insert="~{layout/sidebar}"></th:block>
+        <div class="content col-sm min-vh-100">
+            <!-- content -->
+            <br>
+            <div class="content-header row align-items-center">
+                <div class="col-auto col-md-10 col-xl-10 px-sm-10">
+                    <h6>Examiner</h6>
+                </div>
+                <div class="col-auto col-md-2 col-xl-2">
+                    <a th:href="@{/examiner/new}" type="button"
+                       class="btn btn-outline-success">Create</a>
+                </div>
+            </div>
+            <hr>
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-12">
+                    <form th:action="@{/examiner}">
+                        <div class="row">
+                            <div class="col-md-2 form-group">
+                                <label for="sortField">Field</label>
+                                <select name="sortField" id="sortField" class="form-control">
+                                    <option
+                                            th:selected="${session.containsKey('sortField') && session.sortField == 'account.firstName'}"
+                                            value="account.firstName">
+                                        First Name
+                                    </option>
+                                    <option
+                                            th:selected="${session.containsKey('sortField') && session.sortField == 'account.lastName'}"
+                                            value="account.lastName">
+                                        Last Name
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label for="orderBy">Order By</label>
+                                <select name="orderBy" id="orderBy" class="form-control">
+                                    <option th:value="${null}">N/A</option>
+                                    <option
+                                            th:selected="${session.containsKey('orderBy')
+                                && session.orderBy != null
+                                && session.orderBy == 'asc'}"
+                                            value="asc">
+                                        Ascending</option>
+                                    <option
+                                            th:selected="${session.containsKey('orderBy')
+                                && session.orderBy != null
+                                && session.orderBy == 'desc'}"
+                                            value="desc">Descending</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label for="submitButton">Sort List</label>
+                                <input id="submitButton" type="submit" class="btn btn-outline-success form-control">
+                            </div>
+                        </div>
+                    </form>
+                    <br>
+                    <br>
+                </div>
+            </div>
+
+            <div>
+                <table class="table" id="examinerTable">
+                    <thead>
+                    <tr>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Designation</th>
+                        <th scope="col">Active</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="examiner : ${examinerList}">
+                        <td th:text="${examiner.getAccount().getFirstName()}"></td>
+                        <td th:text="${examiner.getAccount().getLastName()}"></td>
+                        <td th:text="${examiner.getDesignation().getName()}"></td>
+                        <td th:text="${examiner.getAccount().getDisabled() ? 'No' : 'Yes'}"></td>
+                        <td >
+                            <div class="row d-flex justify-content-start">
+                                <div class="col-4" th:if="${examiner.getAccount().getDisabled()}">
+                                    <form action="#"
+                                          th:object="${examiner}"
+                                          th:action="@{'/examiner/{id}/enable'(id=${examiner.id})}"
+                                          th:method="put"
+                                          onsubmit="return confirm('Do you really want to enable?');">
+                                        <button type="submit" class="btn btn-outline-success">
+                                            <i class="far fa-check-square"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="col-4" th:unless="${examiner.getAccount().getDisabled()}">
+                                    <form action="#"
+                                          th:object="${examiner}"
+                                          th:action="@{'/examiner/{id}/disable'(id=${examiner.id})}"
+                                          th:method="put"
+                                          onsubmit="return confirm('Do you really want to disable?');">
+                                        <button type="submit" class="btn btn-outline-warning">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="col-4">
+                                    <a class="btn btn-outline-info"
+                                       th:href="@{'/examiner/{id}'(id=${examiner.id})}">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                                <div class="col-1">
+                                    <form action="#"
+                                          th:action="@{'/examiner/{id}'(id=${examiner.id})}"
+                                          th:method="delete"
+                                          onsubmit="return confirm('Do you really want to delete?');">
+                                        <button type="submit" class="btn btn-outline-danger">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- examinerList pagination -->
+                <nav aria-label="Pagination" th:if="${examinerList.totalPages gt 0}">
+                    <ul class="pagination justify-content-center font-weight-bold">
+                        <li class="page-item" th:classappend="${examinerList.number eq 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{'/examiner?page={id}'(id=${examinerList.number lt 2 ? 1 : examinerList.number})}"
+                               aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${i eq examinerList.number + 1} ? 'active'"
+                            th:each="i : ${#numbers.sequence( 1, examinerList.totalPages, 1)}">
+                            <a class="page-link"
+                               th:href="@{'/examiner?page={id}'(id=${i})}"
+                               th:text="${i}"
+                               th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${examinerList.number + 1 eq examinerList.totalPages} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{'/examiner?page={id}'(id=${examinerList.number + 2})}"
+                               aria-label="Next" title="Next Page" data-toggle="tooltip">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:insert="~{layout/js_urls}"></th:block>
+</body>
+</html>
