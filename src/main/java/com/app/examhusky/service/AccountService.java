@@ -49,6 +49,11 @@ public class AccountService {
                 new EntityNotFoundException("Account  not found!"));
     }
 
+    public Candidate findCandidateById(Integer id) {
+        return candidateRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Account  not found!"));
+    }
+
     public Page<Examiner> sortAndPaginateActiveExaminerList(HttpSession session,
                                                             Optional<Integer> page,
                                                             Optional<Integer> size,
@@ -63,7 +68,26 @@ public class AccountService {
                 sortingAndPaginationService.getSortingFieldFromSession(session, sortField),
                 sortingAndPaginationService.getOrderByFromSession(session, orderBy)
         );
+
         return examinerRepository.findAllByDeletedFalse(pageable);
+    }
+
+    public Page<Candidate> sortAndPaginateActiveCandidateList(HttpSession session,
+                                                            Optional<Integer> page,
+                                                            Optional<Integer> size,
+                                                            Optional<String> sortField,
+                                                            Optional<String> orderBy) {
+        sortingAndPaginationService.removePageAndSortingDataFromSessionOnReload(
+                session, page, size, sortField, orderBy);
+
+        Pageable pageable = sortingAndPaginationService.buildPageable(
+                sortingAndPaginationService.getPageFromSession(session, page),
+                size.orElse(null),
+                sortingAndPaginationService.getSortingFieldFromSession(session, sortField),
+                sortingAndPaginationService.getOrderByFromSession(session, orderBy)
+        );
+
+        return candidateRepository.findAllByDeletedFalse(pageable);
     }
 
     public Account findByEmail(String email) {
@@ -102,6 +126,10 @@ public class AccountService {
 
     public void updateExaminerAccount(Examiner examiner) {
         examinerRepository.save(examiner);
+    }
+
+    public void updateCandidateAccount(Candidate candidate) {
+        candidateRepository.save(candidate);
     }
 
     public void disable(Account account) {

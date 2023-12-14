@@ -14,7 +14,7 @@
                     <hr>
                     <form th:action="@{/examiner/new}" th:object="${examinerAccountDto}" method="post">
                         <div class="form-group mb-3">
-                            <label for="username" class="form-label">Userame</label>
+                            <label for="username" class="form-label">Username</label>
                             <input type="text" class="form-control" id="username"
                                    th:field="*{account.username}">
                             <span th:if="${#fields.hasErrors('account.username')}"

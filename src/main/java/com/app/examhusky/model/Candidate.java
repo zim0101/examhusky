@@ -40,7 +40,7 @@ public class Candidate {
 
     private String linkedinUrl;
 
-    private Boolean deleted;
+    private Boolean deleted = false;
 
     @CreationTimestamp
     private Date createdAt;
