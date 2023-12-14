@@ -1,14 +1,31 @@
 <div xmlns:th="http://www.thymeleaf.org">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="fas fa-yin-yang"></i>
-                <span>{ ExamHusky } </span></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <div class="navbar-brand">
+                <a th:href="@{/}">
+                    <img width="150" th:src="@{/images/logo.png}" alt="logo"/>
+                </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+<!--                        <a class="nav-link active" aria-current="page" href="#"><b>Home</b></a>-->
+                    </li>
+                    <li class="nav-item">
+<!--                        <a class="nav-link active" aria-current="page" href="#"><b>About</b></a>-->
+                    </li>
+                    <li class="nav-item">
+<!--                        <a class="nav-link active" aria-current="page" href="#"><b>Contact Us</b></a>-->
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a class="nav-link" aria-current="page"
+                       th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i></a>
+                </div>
+            </div>
         </div>
     </nav>
+    <br>
     <br>
     <br>
 </div>

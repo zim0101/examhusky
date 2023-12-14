@@ -11,30 +11,43 @@
           crossorigin="anonymous">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/}"><i class="fas fa-yin-yang"></i>{ ExamHusky }</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-brand">
+            <a th:href="@{/}">
+                <img width="150" th:src="@{/images/logo.png}" alt="logo"/>
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/register}">Register</a>
+                    <a class="nav-link active" aria-current="page" href="#"><b>Home</b></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#"><b>About</b></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#"><b>Contact Us</b></a>
                 </li>
             </ul>
+            <div class="d-flex">
+                <a class="nav-link" aria-current="page"
+                   th:href="@{/register}"><b style="color: black;">Sign Up</b></a>
+            </div>
         </div>
     </div>
 </nav>
 <br /><br />
 <div class="container">
     <div class="row">
-        <h1 style="
-        font-size: 100px;
-        font-family: 'Fira Code Medium',serif;
-        padding-top: 300px;
-        padding-bottom: 100px;"
-            class="text-center"> { ExamHusky } </h1>
+        <img width="500" th:src="@{/images/logo.png}" alt="logo"/>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-4"></div>
+        <div class="col-4 d-flex align-items-center">
+            <h6 style="padding-left: 10%; padding-right: 10%;">Interactive like a Husky!</h6>
+        </div>
+        <div class="col-4"></div>
     </div>
 </div>
 </body>
