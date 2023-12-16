@@ -1,5 +1,6 @@
 package com.app.examhusky.model;
 
+import com.app.examhusky.model.enums.ExamState;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +10,6 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -30,9 +30,9 @@ public class Exam implements Serializable {
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @NotNull
-    private Date beginDate;
+    private Date startDate;
 
-    private Boolean published;
+    private ExamState state = ExamState.PENDING;
 
     @ManyToMany(mappedBy = "exams")
     private List<Candidate> candidates;
@@ -45,6 +45,8 @@ public class Exam implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<CandidateExamAnswerRecord> candidateExamAnswerRecord;
+
+    private Boolean deleted;
 
     @CreationTimestamp
     private Date createdAt;
