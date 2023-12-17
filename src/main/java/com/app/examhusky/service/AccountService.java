@@ -41,17 +41,17 @@ public class AccountService {
 
     public Account findById(Integer id) {
         return accountRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Account  not found!"));
+                new EntityNotFoundException("Account not found!"));
     }
 
     public Examiner findExaminerById(Integer id) {
         return examinerRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Account  not found!"));
+                new EntityNotFoundException("Account not found!"));
     }
 
     public Candidate findCandidateById(Integer id) {
         return candidateRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Account  not found!"));
+                new EntityNotFoundException("Account not found!"));
     }
 
     public Page<Examiner> sortAndPaginateActiveExaminerList(HttpSession session,

@@ -1,8 +1,17 @@
 package com.app.examhusky.controller.exam;
 
+import com.app.examhusky.model.Exam;
+import com.app.examhusky.model.Question;
+import com.app.examhusky.model.QuestionCategory;
 import com.app.examhusky.service.ExamService;
+import jakarta.validation.Valid;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/exam/new")
@@ -11,5 +20,30 @@ public class ExamNewController {
 
     public ExamNewController(ExamService examService) {
         this.examService = examService;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
+
+    @ModelAttribute("exam")
+    public Exam addExamToModel(){
+        return new Exam();
+    }
+
+    @GetMapping
+    public String renderCreateForm() {
+        return "exam/new";
+    }
+
+    @PostMapping
+    public String submitCreateForm(@Valid @ModelAttribute Exam exam,
+                                   BindingResult result) {
+        if(result.hasErrors()){
+            return "exam/new";
+        }
+        examService.createOrUpdate(exam);
+        return "redirect:/exam";
     }
 }

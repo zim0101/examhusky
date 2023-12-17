@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:insert="layout/header"></th:block>
+<body>
+<th:block th:insert="~{layout/navbar}"></th:block>
+<div class="container-fluid">
+    <div class="row">
+        <th:block th:insert="~{layout/sidebar}"></th:block>
+        <div class="content col-sm min-vh-100">
+            <!-- content -->
+            <div class="row">
+                <div class="col-auto col-md-10 col-xl-10 px-sm-10 px-0 bg-white">
+                    <h6>Edit Exam</h6>
+                    <hr>
+                    <form th:object="${exam}" th:method="put">
+                        <div class="mb-3">
+                            <label for="label" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="label"
+                                   th:field="*{title}">
+                            <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="duration" class="form-label">Duration</label>
+                            <input type="number" class="form-control" id="duration"
+                                   th:field="*{duration}">
+                            <span th:if="${#fields.hasErrors('duration')}"
+                                  th:errors="*{duration}"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="startDate">Exam Start Date</label>
+                            <input class="form-control date-selector" type="text"
+                                   th:field="*{startDate}"
+                                   id="startDate" placeholder="dd/mm/yyyy">
+                            <span th:if="${#fields.hasErrors('startDate')}"
+                                  th:errors="*{startDate}"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="state">Exam State</label>
+                            <select class="form-control" th:field="*{state}" id="state">
+                                <option label="-- Select an option --" value=""></option>
+                                <option
+                                        th:each="state : ${T(com.app.examhusky.model.enums.ExamState).getEditableStates()}"
+                                        th:value="${state}"
+                                        th:text="${state}"
+                                        th:selected="${exam.getState() != null and exam.getState() == state}">
+                                </option>
+                            </select>
+                            <span th:if="${#fields.hasErrors('state')}" th:errors="*{state}"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label>
+                                <input class="btn btn-outline-success" type="submit" value="Save">
+                            </label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:insert="~{layout/js_urls}"></th:block>
+</body>
+</html>

@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public class SortingAndPaginationService {
 
-    private static final int pagination = 5;
+    private static final int pagination = 10;
 
     public SortingAndPaginationService() { }
 

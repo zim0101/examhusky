@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:insert="layout/header"></th:block>
+<body>
+<th:block th:insert="~{layout/navbar}"></th:block>
+<div class="container-fluid">
+    <div class="row">
+        <th:block th:insert="~{layout/sidebar}"></th:block>
+        <div class="content col-sm min-vh-100">
+            <!-- content -->
+            <br>
+            <div class="content-header row align-items-center">
+                <div class="col-auto col-md-10 col-xl-10 px-sm-10">
+                    <h6>Exam</h6>
+                </div>
+                <div class="col-auto col-md-2 col-xl-2">
+                    <a th:href="@{/exam/new}" type="button"
+                       class="btn btn-outline-success">Create</a>
+                </div>
+            </div>
+            <hr>
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-12">
+                    <form th:action="@{/exam}">
+                        <div class="row">
+                            <div class="col-md-2 form-group">
+                                <label for="sortField">Field</label>
+                                <select name="sortField" id="sortField" class="form-control">
+                                    <option
+                                            th:selected="${session.containsKey('sortField') && session.sortField == 'title'}"
+                                            value="title">
+                                        Title
+                                    </option>
+                                    <option
+                                            th:selected="${session.containsKey('sortField') && session.sortField == 'startDate'}"
+                                            value="startDate">
+                                        Start Date
+                                    </option>
+                                    <option
+                                            th:selected="${session.containsKey('sortField') && session.sortField == 'state'}"
+                                            value="state">
+                                        State
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label for="orderBy">Order By</label>
+                                <select name="orderBy" id="orderBy" class="form-control">
+                                    <option th:value="${null}">N/A</option>
+                                    <option
+                                            th:selected="${session.containsKey('orderBy')
+                                && session.orderBy != null
+                                && session.orderBy == 'asc'}"
+                                            value="asc">
+                                        Ascending</option>
+                                    <option
+                                            th:selected="${session.containsKey('orderBy')
+                                && session.orderBy != null
+                                && session.orderBy == 'desc'}"
+                                            value="desc">Descending</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 form-group">
+                                <label for="submitButton">Sort List</label>
+                                <input id="submitButton" type="submit" class="btn btn-outline-success form-control">
+                            </div>
+                        </div>
+                    </form>
+                    <br>
+                    <br>
+                </div>
+            </div>
+
+            <div>
+                <table class="table" id="examTable">
+                    <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Duration</th>
+                        <th scope="col">Candidates</th>
+                        <th scope="col">Questions</th>
+                        <th scope="col">Examiners</th>
+                        <th scope="col">State</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="exam : ${examList}">
+                        <td th:text="${exam.getTitle()}"></td>
+                        <td th:text="${exam.getStartDate()}"></td>
+                        <td th:text="${exam.getDuration()}"></td>
+                        <td th:text="${exam.candidates.size()}"></td>
+                        <td th:text="${exam.questions.size()}"></td>
+                        <td th:text="${exam.examiners.size()}"></td>
+                        <td th:text="${exam.getState()}"></td>
+                        <td >
+                            <div class="row d-flex justify-content-start">
+                                <!-- Edit -->
+                                <div class="col-2">
+                                    <a class="btn btn-outline-info"
+                                       th:href="@{'/exam/{id}'(id=${exam.id})}">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                                <!-- Publish -->
+                                <div class="col-2"
+                                     th:if="${exam.getState() == T(com.app.examhusky.model.enums.ExamState).PENDING}">
+                                    <form th:action="@{'/exam/{id}/publish'(id=${exam.id})}"
+                                          th:method="put"
+                                          onsubmit="return confirm('Do you really want to delete?');">
+                                        <button type="submit" class="btn btn-outline-success">
+                                            <i class="fas fa-play-circle"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <!-- Examiner -->
+                                <div class="col-2">
+                                    <a class="btn btn-outline-info"
+                                       th:href="@{'/exam/{id}/examiner'(id=${exam.id})}">
+                                        <i class="fas fa-book-reader"></i>
+                                    </a>
+                                </div>
+                                <!-- Question -->
+                                <div class="col-2">
+                                    <a class="btn btn-outline-info"
+                                       th:href="@{'/exam/{id}/question'(id=${exam.id})}">
+                                        <i class="fas fa-book-open"></i>
+                                    </a>
+                                </div>
+                                <!-- Candidate -->
+                                <div class="col-2">
+                                    <a class="btn btn-outline-info"
+                                       th:href="@{'/exam/{id}/candidate'(id=${exam.id})}">
+                                        <i class="fas fa-user-graduate"></i>
+                                    </a>
+                                </div>
+                                <!-- Delete -->
+                                <div class="col-2">
+                                    <form th:action="@{'/exam/{id}'(id=${exam.id})}"
+                                          th:method="delete"
+                                          onsubmit="return confirm('Do you really want to delete?');">
+                                        <button type="submit" class="btn btn-outline-danger">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- examList pagination -->
+                <nav aria-label="Pagination" th:if="${examList.totalPages gt 0}">
+                    <ul class="pagination justify-content-center font-weight-bold">
+                        <li class="page-item" th:classappend="${examList.number eq 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{'/exam?page={id}'(id=${examList.number lt 2 ? 1 : examList.number})}"
+                               aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${i eq examList.number + 1} ? 'active'"
+                            th:each="i : ${#numbers.sequence( 1, examList.totalPages, 1)}">
+                            <a class="page-link"
+                               th:href="@{'/exam?page={id}'(id=${i})}"
+                               th:text="${i}"
+                               th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${examList.number + 1 eq examList.totalPages} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{'/exam?page={id}'(id=${examList.number + 2})}"
+                               aria-label="Next" title="Next Page" data-toggle="tooltip">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:insert="~{layout/js_urls}"></th:block>
+</body>
+</html>

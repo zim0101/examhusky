@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:insert="layout/header"></th:block>
+<body>
+<th:block th:insert="~{layout/navbar}"></th:block>
+<div class="container-fluid">
+    <div class="row">
+        <th:block th:insert="~{layout/sidebar}"></th:block>
+        <div class="content col-sm min-vh-100">
+            <!-- content -->
+            <br>
+            <div class="content-header row align-items-center">
+                <div class="col-auto col-md-10 col-xl-10 px-sm-10">
+                    <h6>Exam Examiners</h6>
+                </div>
+                <div class="col-auto col-md-2 col-xl-2">
+                    <a th:href="@{/examiner/new}" type="button"
+                       class="btn btn-outline-success">Create</a>
+                </div>
+            </div>
+            <hr>
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-4">
+                    <div id="examExaminerList">
+                        <table class="table" id="examExaminerTable">
+                            <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Designation</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="examiner : ${examExaminerList}">
+                                <td th:text="${examiner.getAccount().getFullName()}"></td>
+                                <td th:text="${examiner.getDesignation().getName()}"></td>
+                                <td>
+                                    <div class="col-2">
+                                        <form th:action="@{'/exam/{examId}/examiner/{examinerId}/remove'(examId=${exam.id}, examinerId=${examiner.id})}"
+                                              th:method="put"
+                                              onsubmit="return confirm('Do you really want to remove this examiner?');">
+                                            <button type="submit" class="btn btn-outline-danger">
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <!-- examExaminerList pagination -->
+                        <nav aria-label="Pagination" th:if="${examExaminerList.totalPages gt 0}">
+                            <ul class="pagination justify-content-center font-weight-bold">
+                                <li class="page-item" th:classappend="${examExaminerList.number eq 0} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{'/examiner?page={id}'(id=${examExaminerList.number lt 2 ? 1 : examExaminerList.number})}"
+                                       aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${i eq examExaminerList.number + 1} ? 'active'"
+                                    th:each="i : ${#numbers.sequence( 1, examExaminerList.totalPages, 1)}">
+                                    <a class="page-link"
+                                       th:href="@{'/examiner?page={id}'(id=${i})}"
+                                       th:text="${i}"
+                                       th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${examExaminerList.number + 1 eq examExaminerList.totalPages} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{'/examiner?page={id}'(id=${examExaminerList.number + 2})}"
+                                       aria-label="Next" title="Next Page" data-toggle="tooltip">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <div id="availableExaminerList">
+                        <table class="table" id="availableExaminerListTable">
+                            <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Designation</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="examiner : ${availableExaminerList.getContent()}">
+                                <td th:text="${examiner.account.fullName}"></td>
+                                <td th:text="${examiner.designation.name}"></td>
+                                <td>
+                                    <div class="col-2">
+                                        <form th:action="@{'/exam/{examId}/examiner/{examinerId}/add'(examId=${exam.id}, examinerId=${examiner.id})}"
+                                              th:method="put"
+                                              onsubmit="return confirm('Do you really want to add this examiner?');">
+                                            <button type="submit" class="btn btn-outline-success">
+                                                <i class="far fa-check-circle"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <!-- availableExaminerList pagination -->
+                        <nav aria-label="Pagination" th:if="${availableExaminerList.totalPages gt 0}">
+                            <ul class="pagination justify-content-center font-weight-bold">
+                                <li class="page-item"
+                                    th:classappend="${availableExaminerList.number eq 0} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{'/examiner?page={id}'(id=${availableExaminerList.number lt 2 ? 1 : availableExaminerList.number})}"
+                                       aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${i eq availableExaminerList.number + 1} ? 'active'"
+                                    th:each="i : ${#numbers.sequence( 1, availableExaminerList.totalPages, 1)}">
+                                    <a class="page-link"
+                                       th:href="@{'/examiner?page={id}'(id=${i})}"
+                                       th:text="${i}"
+                                       th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${availableExaminerList.number + 1 eq availableExaminerList.totalPages} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{'/examiner?page={id}'(id=${availableExaminerList.number + 2})}"
+                                       aria-label="Next" title="Next Page" data-toggle="tooltip">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<th:block th:insert="~{layout/js_urls}"></th:block>
+</body>
+</html>

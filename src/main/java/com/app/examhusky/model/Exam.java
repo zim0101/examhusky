@@ -2,9 +2,7 @@ package com.app.examhusky.model;
 
 import com.app.examhusky.model.enums.ExamState;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -30,23 +28,28 @@ public class Exam implements Serializable {
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @NotNull
+    @Future
     private Date startDate;
 
     private ExamState state = ExamState.PENDING;
 
-    @ManyToMany(mappedBy = "exams")
+    @NotNull
+    @Min(value = 1, message = "Duration must be at least 1 min!")
+    private Integer duration;
+
+    @ManyToMany(mappedBy = "exams", fetch = FetchType.LAZY)
     private List<Candidate> candidates;
 
-    @ManyToMany(mappedBy = "exams")
+    @ManyToMany(mappedBy = "exams", fetch = FetchType.LAZY)
     private List<Examiner> examiners;
 
-    @ManyToMany(mappedBy = "exams")
+    @ManyToMany(mappedBy = "exams", fetch = FetchType.LAZY)
     private List<Question> questions;
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<CandidateExamAnswerRecord> candidateExamAnswerRecord;
 
-    private Boolean deleted;
+    private Boolean deleted = false;
 
     @CreationTimestamp
     private Date createdAt;

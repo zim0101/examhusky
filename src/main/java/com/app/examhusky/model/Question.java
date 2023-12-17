@@ -1,5 +1,6 @@
 package com.app.examhusky.model;
 
+import com.app.examhusky.model.enums.QuestionDifficulty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +21,13 @@ public class Question implements Serializable {
     @SequenceGenerator(name = "question_generator", sequenceName = "question_seq")
     private Integer id;
 
+    @NotNull
+    @NotEmpty
+    @Column(columnDefinition = "TEXT")
+    private String title;
+
+    private QuestionDifficulty difficultyLevel;
+
     @ManyToOne
     @NotNull
     private QuestionCategory category;
@@ -33,11 +41,6 @@ public class Question implements Serializable {
             joinColumns = @JoinColumn(name = "question_id"),
             inverseJoinColumns = @JoinColumn(name = "exam_id"))
     private List<Exam> exams;
-
-    @NotNull
-    @NotEmpty
-    @Column(columnDefinition = "TEXT")
-    private String title;
 
     private Boolean deleted = false;
 
