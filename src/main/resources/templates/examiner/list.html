@@ -72,8 +72,7 @@
                 <table class="table" id="examinerTable">
                     <thead>
                     <tr>
-                        <th scope="col">First Name</th>
-                        <th scope="col">Last Name</th>
+                        <th scope="col">Full Name</th>
                         <th scope="col">Designation</th>
                         <th scope="col">Active</th>
                         <th scope="col">Action</th>
@@ -81,8 +80,7 @@
                     </thead>
                     <tbody>
                     <tr th:each="examiner : ${examinerList}">
-                        <td th:text="${examiner.getAccount().getFirstName()}"></td>
-                        <td th:text="${examiner.getAccount().getLastName()}"></td>
+                        <td th:text="${examiner.getAccount().getFullName()}"></td>
                         <td th:text="${examiner.getDesignation().getName()}"></td>
                         <td th:text="${examiner.getAccount().getDisabled() ? 'No' : 'Yes'}"></td>
                         <td >

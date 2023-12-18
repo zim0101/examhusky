@@ -1,12 +1,15 @@
 package com.app.examhusky.service;
 
+import com.app.examhusky.model.Candidate;
 import com.app.examhusky.model.Exam;
 import com.app.examhusky.model.Examiner;
 import com.app.examhusky.model.enums.ExamState;
+import com.app.examhusky.repository.CandidateRepository;
 import com.app.examhusky.repository.ExamRepository;
 import com.app.examhusky.repository.ExaminerRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -20,14 +23,17 @@ import java.util.Optional;
 public class ExamService {
     private final ExamRepository examRepository;
     private final ExaminerRepository examinerRepository;
+    private final CandidateRepository candidateRepository;
     private final SortingAndPaginationService sortingAndPaginationService;
     private static final Logger log = LoggerFactory.getLogger(ExamService.class);
 
     public ExamService(ExamRepository examRepository,
                        ExaminerRepository examinerRepository,
+                       CandidateRepository candidateRepository,
                        SortingAndPaginationService sortingAndPaginationService) {
         this.examRepository = examRepository;
         this.examinerRepository = examinerRepository;
+        this.candidateRepository = candidateRepository;
         this.sortingAndPaginationService = sortingAndPaginationService;
     }
 
@@ -86,6 +92,28 @@ public class ExamService {
         examiner.getExams().remove(exam);
         exam.getExaminers().remove(examiner);
         examinerRepository.save(examiner);
+        examRepository.save(exam);
+    }
+
+    @Transactional
+    public void addCandidateToExam(Integer candidateId, Integer examId) {
+        Exam exam = findById(examId);
+        Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() ->
+                new EntityNotFoundException("Candidate not found"));
+        candidate.getExams().add(exam);
+        exam.getCandidates().add(candidate);
+        candidateRepository.save(candidate);
+        examRepository.save(exam);
+    }
+
+    @Transactional
+    public void removeCandidateFromExam(Integer candidateId, Integer examId) {
+        Exam exam = findById(examId);
+        Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() ->
+                new EntityNotFoundException("Candidate not found"));
+        candidate.getExams().remove(exam);
+        exam.getCandidates().remove(candidate);
+        candidateRepository.save(candidate);
         examRepository.save(exam);
     }
 

@@ -11,7 +11,7 @@
             <br>
             <div class="content-header row align-items-center">
                 <div class="col-auto col-md-10 col-xl-10 px-sm-10">
-                    <h6>Exam Examiners</h6>
+                    <h6>Exam Candidates</h6>
                 </div>
             </div>
             <hr>
@@ -40,24 +40,25 @@
             <hr>
             <div class="row">
                 <div class="col-4">
-                    <div id="examExaminerList">
-                        <table class="table" id="examExaminerTable">
+                    <div id="examCandidateList">
+                        <table class="table" id="examCandidateTable">
                             <thead>
                             <tr>
                                 <th scope="col">Name</th>
-                                <th scope="col">Designation</th>
+                                <th scope="col">Mobile</th>
                                 <th scope="col">Action</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="examiner : ${examExaminerList}">
-                                <td th:text="${examiner.getAccount().getFullName()}"></td>
-                                <td th:text="${examiner.getDesignation().getName()}"></td>
+                            <tr th:each="candidate : ${examCandidateList}">
+                                <td th:text="${candidate.getAccount().getFullName()}"></td>
+                                <td th:text="${candidate.getMobileNumber()}"></td>
                                 <td>
                                     <div class="col-2">
-                                        <form th:action="@{'/exam/{examId}/examiner/{examinerId}/remove'(examId=${exam.id}, examinerId=${examiner.id})}"
+                                        <form
+                                                th:action="@{'/exam/{examId}/candidate/{candidateId}/remove'(examId=${exam.id}, candidateId=${candidate.id})}"
                                               th:method="put"
-                                              onsubmit="return confirm('Do you really want to remove this examiner?');">
+                                              onsubmit="return confirm('Do you really want to remove this candidate?');">
                                             <button type="submit" class="btn btn-outline-danger">
                                                 <i class="fas fa-ban"></i>
                                             </button>
@@ -67,28 +68,28 @@
                             </tr>
                             </tbody>
                         </table>
-                        <!-- examExaminerList pagination -->
-                        <nav aria-label="Pagination" th:if="${examExaminerList.totalPages gt 0}">
+                        <!-- examCandidateList pagination -->
+                        <nav aria-label="Pagination" th:if="${examCandidateList.totalPages gt 0}">
                             <ul class="pagination justify-content-center font-weight-bold">
-                                <li class="page-item" th:classappend="${examExaminerList.number eq 0} ? 'disabled'">
+                                <li class="page-item" th:classappend="${examCandidateList.number eq 0} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{'/examiner?page={id}'(id=${examExaminerList.number lt 2 ? 1 : examExaminerList.number})}"
+                                       th:href="@{'/candidate?page={id}'(id=${examCandidateList.number lt 2 ? 1 : examCandidateList.number})}"
                                        aria-label="Previous" title="Previous Page" data-toggle="tooltip">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                                 <li class="page-item"
-                                    th:classappend="${i eq examExaminerList.number + 1} ? 'active'"
-                                    th:each="i : ${#numbers.sequence( 1, examExaminerList.totalPages, 1)}">
+                                    th:classappend="${i eq examCandidateList.number + 1} ? 'active'"
+                                    th:each="i : ${#numbers.sequence( 1, examCandidateList.totalPages, 1)}">
                                     <a class="page-link"
-                                       th:href="@{'/examiner?page={id}'(id=${i})}"
+                                       th:href="@{'/candidate?page={id}'(id=${i})}"
                                        th:text="${i}"
                                        th:title="${'Page '+ i}" data-toggle="tooltip"></a>
                                 </li>
                                 <li class="page-item"
-                                    th:classappend="${examExaminerList.number + 1 eq examExaminerList.totalPages} ? 'disabled'">
+                                    th:classappend="${examCandidateList.number + 1 eq examCandidateList.totalPages} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{'/examiner?page={id}'(id=${examExaminerList.number + 2})}"
+                                       th:href="@{'/candidate?page={id}'(id=${examCandidateList.number + 2})}"
                                        aria-label="Next" title="Next Page" data-toggle="tooltip">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
@@ -98,24 +99,25 @@
                     </div>
                 </div>
                 <div class="col-8">
-                    <div id="availableExaminerList">
-                        <table class="table" id="availableExaminerListTable">
+                    <div id="availableCandidateList">
+                        <table class="table" id="availableCandidateListTable">
                             <thead>
                             <tr>
                                 <th scope="col">Name</th>
-                                <th scope="col">Designation</th>
+                                <th scope="col">Mobile</th>
                                 <th scope="col">Action</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="examiner : ${availableExaminerList.getContent()}">
-                                <td th:text="${examiner.account.fullName}"></td>
-                                <td th:text="${examiner.designation.name}"></td>
+                            <tr th:each="candidate : ${availableCandidateList.getContent()}">
+                                <td th:text="${candidate.account.fullName}"></td>
+                                <td th:text="${candidate.mobileNumber}"></td>
                                 <td>
                                     <div class="col-2">
-                                        <form th:action="@{'/exam/{examId}/examiner/{examinerId}/add'(examId=${exam.id}, examinerId=${examiner.id})}"
+                                        <form
+                                                th:action="@{'/exam/{examId}/candidate/{candidateId}/add'(examId=${exam.id}, candidateId=${candidate.id})}"
                                               th:method="put"
-                                              onsubmit="return confirm('Do you really want to add this examiner?');">
+                                              onsubmit="return confirm('Do you really want to add this candidate?');">
                                             <button type="submit" class="btn btn-outline-success">
                                                 <i class="far fa-check-circle"></i>
                                             </button>
@@ -125,29 +127,29 @@
                             </tr>
                             </tbody>
                         </table>
-                        <!-- availableExaminerList pagination -->
-                        <nav aria-label="Pagination" th:if="${availableExaminerList.totalPages gt 0}">
+                        <!-- availableCandidateList pagination -->
+                        <nav aria-label="Pagination" th:if="${availableCandidateList.totalPages gt 0}">
                             <ul class="pagination justify-content-center font-weight-bold">
                                 <li class="page-item"
-                                    th:classappend="${availableExaminerList.number eq 0} ? 'disabled'">
+                                    th:classappend="${availableCandidateList.number eq 0} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{'/examiner?page={id}'(id=${availableExaminerList.number lt 2 ? 1 : availableExaminerList.number})}"
+                                       th:href="@{'/candidate?page={id}'(id=${availableCandidateList.number lt 2 ? 1 : availableCandidateList.number})}"
                                        aria-label="Previous" title="Previous Page" data-toggle="tooltip">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                                 <li class="page-item"
-                                    th:classappend="${i eq availableExaminerList.number + 1} ? 'active'"
-                                    th:each="i : ${#numbers.sequence( 1, availableExaminerList.totalPages, 1)}">
+                                    th:classappend="${i eq availableCandidateList.number + 1} ? 'active'"
+                                    th:each="i : ${#numbers.sequence( 1, availableCandidateList.totalPages, 1)}">
                                     <a class="page-link"
-                                       th:href="@{'/examiner?page={id}'(id=${i})}"
+                                       th:href="@{'/candidate?page={id}'(id=${i})}"
                                        th:text="${i}"
                                        th:title="${'Page '+ i}" data-toggle="tooltip"></a>
                                 </li>
                                 <li class="page-item"
-                                    th:classappend="${availableExaminerList.number + 1 eq availableExaminerList.totalPages} ? 'disabled'">
+                                    th:classappend="${availableCandidateList.number + 1 eq availableCandidateList.totalPages} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{'/examiner?page={id}'(id=${availableExaminerList.number + 2})}"
+                                       th:href="@{'/candidate?page={id}'(id=${availableCandidateList.number + 2})}"
                                        aria-label="Next" title="Next Page" data-toggle="tooltip">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
