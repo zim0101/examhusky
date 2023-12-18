@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:insert="layout/header"></th:block>
+<body>
+<th:block th:insert="~{layout/navbar}"></th:block>
+<div class="container-fluid">
+    <div class="row">
+        <th:block th:insert="~{layout/sidebar}"></th:block>
+        <div class="content col-sm min-vh-100">
+            <!-- content -->
+            <br>
+            <div class="content-header row align-items-center">
+                <div class="col-auto col-md-10 col-xl-10 px-sm-10">
+                    <h6>Exam Questions</h6>
+                </div>
+            </div>
+            <hr>
+            <br>
+            <br>
+            <div class="row">
+                <table class="table" id="examInformation">
+                    <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">Duration</th>
+                        <th scope="col">State</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td th:text="${exam.getTitle()}"></td>
+                        <td th:text="${exam.getStartDate()}"></td>
+                        <td th:text="${exam.getDuration()}"></td>
+                        <td th:text="${exam.getState()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-4">
+                    <div id="examQuestionList">
+                        <table class="table" id="examQuestionTable">
+                            <thead>
+                            <tr>
+                                <th scope="col">Title</th>
+                                <th scope="col">Difficulty Level</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="question : ${examQuestionList}">
+                                <td th:text="${question.getTitle()}"></td>
+                                <td th:text="${question.getDifficultyLevel()}"></td>
+                                <td>
+                                    <div class="col-2">
+                                        <form
+                                                th:action="@{'/exam/{examId}/question/{questionId}/remove'(examId=${exam.id}, questionId=${question.id})}"
+                                                th:method="put"
+                                                onsubmit="return confirm('Do you really want to remove this question?');">
+                                            <button type="submit" class="btn btn-outline-danger">
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <!-- examQuestionList pagination -->
+                        <nav aria-label="Pagination" th:if="${examQuestionList.totalPages gt 0}">
+                            <ul class="pagination justify-content-center font-weight-bold">
+                                <li class="page-item" th:classappend="${examQuestionList.number eq 0} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{'/question?page={id}'(id=${examQuestionList.number lt 2 ? 1 : examQuestionList.number})}"
+                                       aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${i eq examQuestionList.number + 1} ? 'active'"
+                                    th:each="i : ${#numbers.sequence( 1, examQuestionList.totalPages, 1)}">
+                                    <a class="page-link"
+                                       th:href="@{'/question?page={id}'(id=${i})}"
+                                       th:text="${i}"
+                                       th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${examQuestionList.number + 1 eq examQuestionList.totalPages} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{'/question?page={id}'(id=${examQuestionList.number + 2})}"
+                                       aria-label="Next" title="Next Page" data-toggle="tooltip">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <div id="availableQuestionList">
+                        <table class="table" id="availableQuestionListTable">
+                            <thead>
+                            <tr>
+                                <th scope="col">Title</th>
+                                <th scope="col">Difficulty Level</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="question : ${availableQuestionList.getContent()}">
+                                <td th:text="${question.title}"></td>
+                                <td th:text="${question.difficultyLevel}"></td>
+                                <td>
+                                    <div class="col-2">
+                                        <form
+                                                th:action="@{'/exam/{examId}/question/{questionId}/add'(examId=${exam.id}, questionId=${question.id})}"
+                                                th:method="put"
+                                                onsubmit="return confirm('Do you really want to add this question?');">
+                                            <button type="submit" class="btn btn-outline-success">
+                                                <i class="far fa-check-circle"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <!-- availableQuestionList pagination -->
+                        <nav aria-label="Pagination" th:if="${availableQuestionList.totalPages gt 0}">
+                            <ul class="pagination justify-content-center font-weight-bold">
+                                <li class="page-item"
+                                    th:classappend="${availableQuestionList.number eq 0} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{'/question?page={id}'(id=${availableQuestionList.number lt 2 ? 1 : availableQuestionList.number})}"
+                                       aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${i eq availableQuestionList.number + 1} ? 'active'"
+                                    th:each="i : ${#numbers.sequence( 1, availableQuestionList.totalPages, 1)}">
+                                    <a class="page-link"
+                                       th:href="@{'/question?page={id}'(id=${i})}"
+                                       th:text="${i}"
+                                       th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                                </li>
+                                <li class="page-item"
+                                    th:classappend="${availableQuestionList.number + 1 eq availableQuestionList.totalPages} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{'/question?page={id}'(id=${availableQuestionList.number + 2})}"
+                                       aria-label="Next" title="Next Page" data-toggle="tooltip">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:insert="~{layout/js_urls}"></th:block>
+</body>
+</html>

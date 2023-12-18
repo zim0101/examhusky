@@ -24,6 +24,7 @@ public class ExamCandidateListController {
         this.examService = examService;
         this.candidateService = candidateService;
     }
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));

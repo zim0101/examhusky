@@ -44,6 +44,44 @@ public class QuestionService {
         return questionRepository.findAllByDeletedFalse(pageable);
     }
 
+    public Page<Question> findQuestionsOfExam(Integer examId,
+                                              HttpSession session,
+                                              Optional<Integer> page,
+                                              Optional<Integer> size,
+                                              Optional<String> sortField,
+                                              Optional<String> orderBy) {
+        sortingAndPaginationService.removePageAndSortingDataFromSessionOnReload(
+                session, page, size, sortField, orderBy);
+
+        Pageable pageable = sortingAndPaginationService.buildPageable(
+                sortingAndPaginationService.getPageFromSession(session, page),
+                size.orElse(null),
+                sortingAndPaginationService.getSortingFieldFromSession(session, sortField),
+                sortingAndPaginationService.getOrderByFromSession(session, orderBy)
+        );
+
+        return questionRepository.findByExams_Id(examId, pageable);
+    }
+
+    public Page<Question> findAvailableQuestionsForExam(Integer examId,
+                                                        HttpSession session,
+                                                        Optional<Integer> page,
+                                                        Optional<Integer> size,
+                                                        Optional<String> sortField,
+                                                        Optional<String> orderBy) {
+        sortingAndPaginationService.removePageAndSortingDataFromSessionOnReload(
+                session, page, size, sortField, orderBy);
+
+        Pageable pageable = sortingAndPaginationService.buildPageable(
+                sortingAndPaginationService.getPageFromSession(session, page),
+                size.orElse(null),
+                sortingAndPaginationService.getSortingFieldFromSession(session, sortField),
+                sortingAndPaginationService.getOrderByFromSession(session, orderBy)
+        );
+
+        return questionRepository.findCandidatesNotAssignedToExam(examId, pageable);
+    }
+
     public void createOrUpdate(Question question) {
         question.setEditor(authUserService.currentAuthAccount());
         question.setDeleted(Boolean.FALSE);
