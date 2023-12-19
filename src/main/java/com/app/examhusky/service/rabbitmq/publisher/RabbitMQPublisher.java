@@ -23,18 +23,6 @@ public class RabbitMQPublisher {
     }
 
     public void sendUserRegistrationEmail(EmailDto emailDto) {
-        String jsonPayload = convertEmailDtoToJsonString(emailDto);
         rabbitTemplate.convertAndSend(emailExchange, userRegistrationRoutingKey, emailDto);
-    }
-
-    private String convertEmailDtoToJsonString(EmailDto emailDto) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.writeValueAsString(emailDto);
-        } catch (JsonProcessingException e) {
-            // Handle the exception or log an error
-            e.printStackTrace();
-            return null;
-        }
     }
 }
