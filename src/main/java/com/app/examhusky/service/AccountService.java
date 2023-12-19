@@ -1,6 +1,7 @@
 package com.app.examhusky.service;
 
 import com.app.examhusky.dto.CandidateAccountDto;
+import com.app.examhusky.dto.EmailDto;
 import com.app.examhusky.dto.ExaminerAccountDto;
 import com.app.examhusky.model.Account;
 import com.app.examhusky.model.Candidate;
@@ -9,6 +10,7 @@ import com.app.examhusky.model.enums.Role;
 import com.app.examhusky.repository.AccountRepository;
 import com.app.examhusky.repository.CandidateRepository;
 import com.app.examhusky.repository.ExaminerRepository;
+import com.app.examhusky.service.rabbitmq.publisher.RabbitMQPublisher;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -27,16 +29,20 @@ public class AccountService {
     private final ExaminerRepository examinerRepository;
     private final SortingAndPaginationService sortingAndPaginationService;
     private final PasswordEncoder passwordEncoder;
+    private final RabbitMQPublisher rabbitMQPublisher;
 
     public AccountService(AccountRepository accountRepository,
                           CandidateRepository candidateRepository,
-                          ExaminerRepository examinerRepository, SortingAndPaginationService sortingAndPaginationService,
-                          PasswordEncoder passwordEncoder) {
+                          ExaminerRepository examinerRepository,
+                          SortingAndPaginationService sortingAndPaginationService,
+                          PasswordEncoder passwordEncoder,
+                          RabbitMQPublisher rabbitMQPublisher) {
         this.accountRepository = accountRepository;
         this.candidateRepository = candidateRepository;
         this.examinerRepository = examinerRepository;
         this.sortingAndPaginationService = sortingAndPaginationService;
         this.passwordEncoder = passwordEncoder;
+        this.rabbitMQPublisher = rabbitMQPublisher;
     }
 
     public Account findById(Integer id) {
@@ -107,6 +113,14 @@ public class AccountService {
 
         accountRepository.save(account);
         candidateRepository.save(candidate);
+
+        EmailDto emailDto = new EmailDto();
+        emailDto.setMailTo(account.getEmail());
+        emailDto.setMailSubject("Congratulation for your ExamHusky Registration");
+        emailDto.setContentType("text/plain; charset=\"utf-8\"");
+        emailDto.setMailContent("Your registration is complete!");
+
+        rabbitMQPublisher.sendUserRegistrationEmail(emailDto);
     }
 
     @Transactional
