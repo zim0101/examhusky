@@ -14,7 +14,7 @@ public class UserRegistrationEmailListener {
         this.emailService = emailService;
     }
 
-    @RabbitListener(queues = "${examhusky.rabbitmq.queue.user-registration}")
+    @RabbitListener(queues = "${examhusky.rabbitmq.queue.user-registration-email}")
     public void processUserRegistrationEmail(EmailDto emailDto) {
         emailService.sendMail(emailDto);
     }
