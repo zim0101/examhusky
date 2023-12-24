@@ -33,8 +33,14 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/images/**", "/", "/register/**").permitAll()
+                                .requestMatchers("/images/**", "/", "/register/**", "/oauth/**").permitAll()
                                 .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2Login ->
+                        oauth2Login
+                                .loginPage("/login")
+                                .defaultSuccessUrl("/dashboard")
+                                .permitAll()
                 )
                 .formLogin(
                         form -> form
@@ -42,7 +48,9 @@ public class SecurityConfiguration {
                                 .loginProcessingUrl("/login")
                                 .defaultSuccessUrl("/dashboard")
                                 .permitAll()
-                ).logout(
+                                .failureUrl("/login?error=true") // Specify a custom failure URL
+                )
+                .logout(
                         logout -> logout
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                                 .permitAll()
