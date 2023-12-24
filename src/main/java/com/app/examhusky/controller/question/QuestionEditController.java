@@ -16,7 +16,6 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/question/{id}")
-@PreAuthorize("hasRole('ROLE_ADMIN') && hasRole('ROLE_EXAMINER')")
 public class QuestionEditController {
     private final QuestionService questionService;
     private final QuestionCategoryService questionCategoryService;
