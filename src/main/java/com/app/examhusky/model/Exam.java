@@ -46,9 +46,6 @@ public class Exam implements Serializable {
     @ManyToMany(mappedBy = "exams", fetch = FetchType.LAZY)
     private List<Question> questions;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<CandidateExamAnswerRecord> candidateExamAnswerRecord;
-
     private Boolean deleted = false;
 
     @CreationTimestamp

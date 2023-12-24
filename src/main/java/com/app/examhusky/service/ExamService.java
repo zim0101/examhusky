@@ -1,18 +1,15 @@
 package com.app.examhusky.service;
 
-import com.app.examhusky.model.Candidate;
-import com.app.examhusky.model.Exam;
-import com.app.examhusky.model.Examiner;
-import com.app.examhusky.model.Question;
+import com.app.examhusky.dto.EmailDto;
+import com.app.examhusky.model.*;
 import com.app.examhusky.model.enums.ExamState;
 import com.app.examhusky.repository.CandidateRepository;
 import com.app.examhusky.repository.ExamRepository;
 import com.app.examhusky.repository.ExaminerRepository;
 import com.app.examhusky.repository.QuestionRepository;
+import com.app.examhusky.service.rabbitmq.publisher.RabbitMQPublisher;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,23 +18,28 @@ import java.util.Optional;
 
 @Service
 public class ExamService {
+    private final AuthUserService authUserService;
     private final ExamRepository examRepository;
     private final ExaminerRepository examinerRepository;
     private final CandidateRepository candidateRepository;
     private final QuestionRepository questionRepository;
     private final SortingAndPaginationService sortingAndPaginationService;
-    private static final Logger log = LoggerFactory.getLogger(ExamService.class);
+    private final RabbitMQPublisher rabbitMQPublisher;
 
-    public ExamService(ExamRepository examRepository,
+    public ExamService(AuthUserService authUserService,
+                       ExamRepository examRepository,
                        ExaminerRepository examinerRepository,
                        CandidateRepository candidateRepository,
                        QuestionRepository questionRepository,
-                       SortingAndPaginationService sortingAndPaginationService) {
+                       SortingAndPaginationService sortingAndPaginationService,
+                       RabbitMQPublisher rabbitMQPublisher) {
+        this.authUserService = authUserService;
         this.examRepository = examRepository;
         this.examinerRepository = examinerRepository;
         this.candidateRepository = candidateRepository;
         this.questionRepository = questionRepository;
         this.sortingAndPaginationService = sortingAndPaginationService;
+        this.rabbitMQPublisher = rabbitMQPublisher;
     }
 
     public Exam findById(Integer id) {
@@ -66,13 +68,47 @@ public class ExamService {
         }
     }
 
+    public Page<Exam> sortAndPaginateAllExamsOfCandidate(HttpSession session,
+                                          Optional<Integer> page,
+                                          Optional<Integer> size,
+                                          Optional<String> sortField,
+                                          Optional<String> orderBy) {
+        sortingAndPaginationService.removePageAndSortingDataFromSessionOnReload(
+                session, page, size, sortField, orderBy);
+
+        Pageable pageable = sortingAndPaginationService.buildPageable(
+                sortingAndPaginationService.getPageFromSession(session, page),
+                size.orElse(null),
+                sortingAndPaginationService.getSortingFieldFromSession(session, sortField),
+                sortingAndPaginationService.getOrderByFromSession(session, orderBy)
+        );
+
+        Candidate candidate =
+                candidateRepository.findByAccount(authUserService.currentAuthAccount()).orElseThrow(() ->
+                        new EntityNotFoundException("Candidate not found"));
+        if (sortField.isPresent() && orderBy.isPresent()) {
+            return examRepository.findByCandidates_Id(candidate.getId(), pageable);
+        } else {
+            return examRepository.findByCandidates_IdOrderByStartDateDesc(candidate.getId(), pageable);
+        }
+    }
+
     public void createOrUpdate(Exam exam) {
         examRepository.save(exam);
+        if (exam.getState() == ExamState.PUBLISHED) {
+            sendExamUpdateNotificationToAll(exam);
+        }
     }
 
     public void publish(Integer id) {
         Exam exam = findById(id);
         exam.setState(ExamState.PUBLISHED);
+        examRepository.save(exam);
+        sendExamPublishNotificationToAll(exam);
+    }
+
+    public void softDelete(Exam exam) {
+        exam.setDeleted(Boolean.TRUE);
         examRepository.save(exam);
     }
 
@@ -85,6 +121,8 @@ public class ExamService {
         exam.getExaminers().add(examiner);
         examinerRepository.save(examiner);
         examRepository.save(exam);
+
+        sendExamInvitationEmail(examiner.getAccount(), exam);
     }
 
     @Transactional
@@ -96,6 +134,8 @@ public class ExamService {
         exam.getExaminers().remove(examiner);
         examinerRepository.save(examiner);
         examRepository.save(exam);
+
+        sendExamInvitationCancelEmail(examiner.getAccount(), exam);
     }
 
     @Transactional
@@ -107,6 +147,8 @@ public class ExamService {
         exam.getCandidates().add(candidate);
         candidateRepository.save(candidate);
         examRepository.save(exam);
+
+        sendExamInvitationEmail(candidate.getAccount(), exam);
     }
 
     @Transactional
@@ -118,6 +160,8 @@ public class ExamService {
         exam.getCandidates().remove(candidate);
         candidateRepository.save(candidate);
         examRepository.save(exam);
+
+        sendExamInvitationCancelEmail(candidate.getAccount(), exam);
     }
 
     @Transactional
@@ -142,8 +186,69 @@ public class ExamService {
         examRepository.save(exam);
     }
 
-    public void softDelete(Exam exam) {
-        exam.setDeleted(Boolean.TRUE);
-        examRepository.save(exam);
+    public void sendExamUpdateNotificationToAll(Exam exam) {
+        exam.getExaminers().forEach(examiner -> {
+            buildAndSendExamUpdateEmailToQueue(examiner.getAccount(), exam);
+        });
+        exam.getCandidates().forEach(candidate -> {
+            buildAndSendExamUpdateEmailToQueue(candidate.getAccount(), exam);
+        });
+    }
+
+    public void buildAndSendExamUpdateEmailToQueue(Account account, Exam exam) {
+        EmailDto emailDto = new EmailDto();
+        emailDto.setMailTo(account.getEmail());
+        emailDto.setMailSubject("Exam has been updated!");
+        emailDto.setContentType("text/plain; charset=\"utf-8\"");
+        emailDto.setMailContent(exam.getTitle() + "  has been updated.");
+
+        rabbitMQPublisher.sendExamUpdateEmail(emailDto);
+    }
+
+    public void sendExamPublishNotificationToAll(Exam exam) {
+        exam.getExaminers().forEach(examiner -> {
+            buildAndSendExamPublishEmailToQueue(examiner.getAccount(), exam);
+        });
+        exam.getCandidates().forEach(candidate -> {
+            buildAndSendExamPublishEmailToQueue(candidate.getAccount(), exam);
+        });
+    }
+
+    public void buildAndSendExamPublishEmailToQueue(Account account, Exam exam) {
+        EmailDto emailDto = new EmailDto();
+        emailDto.setMailTo(account.getEmail());
+        emailDto.setMailSubject("Exam has been published!");
+        emailDto.setContentType("text/plain; charset=\"utf-8\"");
+        emailDto.setMailContent(exam.getTitle() + "  has been published.");
+
+        rabbitMQPublisher.sendExamUpdateEmail(emailDto);
+    }
+
+    public void sendExamInvitationEmail(Account account, Exam exam) {
+        buildAndSendExamInvitationEmailToQueue(account, exam);
+    }
+
+    public void sendExamInvitationCancelEmail(Account account, Exam exam) {
+        buildAndSendExamInvitationCancelEmailToQueue(account, exam);
+    }
+
+    public void buildAndSendExamInvitationEmailToQueue(Account account, Exam exam) {
+        EmailDto emailDto = new EmailDto();
+        emailDto.setMailTo(account.getEmail());
+        emailDto.setMailSubject("Exam Invitation!");
+        emailDto.setContentType("text/plain; charset=\"utf-8\"");
+        emailDto.setMailContent("You have been invited to " + exam.getTitle());
+
+        rabbitMQPublisher.sendExamUpdateEmail(emailDto);
+    }
+
+    public void buildAndSendExamInvitationCancelEmailToQueue(Account account, Exam exam) {
+        EmailDto emailDto = new EmailDto();
+        emailDto.setMailTo(account.getEmail());
+        emailDto.setMailSubject("Exam invitation canceled!");
+        emailDto.setContentType("text/plain; charset=\"utf-8\"");
+        emailDto.setMailContent("Your invitation has canceled for " + exam.getTitle());
+
+        rabbitMQPublisher.sendExamUpdateEmail(emailDto);
     }
 }

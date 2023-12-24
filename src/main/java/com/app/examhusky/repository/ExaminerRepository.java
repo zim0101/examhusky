@@ -24,6 +24,20 @@ public interface ExaminerRepository extends JpaRepository<Examiner, Integer> {
      * @param pageable Pagination information.
      * @return A pageable list of examiners not assigned to the specified exam.
      */
-    @Query("SELECT e FROM Examiner e LEFT JOIN e.exams ex WHERE ex.id <> :examId OR ex.id IS NULL")
+//    @Query("SELECT e FROM Examiner e JOIN e.exams ex WHERE ex.id <> :examId OR ex.id IS NULL")
+//    @Query("""
+//            select examiner from Examiner examiner join examiner.exams as exams where exams.id != :examId""")
+
+    @Query("""
+        select examiner
+        from Examiner examiner
+        where not exists (
+            select 1
+            from Exam exam
+            join exam.examiners as examiners
+            where exam.id = :examId
+            and examiner.id = examiners.id
+        )
+    """)
     Page<Examiner> findExaminersNotAssignedToExam(@Param("examId") Integer examId, Pageable pageable);
 }

@@ -23,6 +23,16 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
      * @param pageable Pagination information.
      * @return A pageable list of questions not assigned to the specified exam.
      */
-    @Query("SELECT e FROM Question e LEFT JOIN e.exams ex WHERE ex.id <> :examId OR ex.id IS NULL")
+    @Query("""
+        select question
+        from Question question
+        where not exists (
+            select 1
+            from Exam exam
+            join exam.questions as questions
+            where exam.id = :examId
+            and question.id = questions.id
+        )
+    """)
     Page<Question> findCandidatesNotAssignedToExam(Integer examId, Pageable pageable);
 }

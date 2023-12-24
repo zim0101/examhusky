@@ -13,6 +13,9 @@ import java.util.EnumSet;
  *     <li>{@code ON_GOING}: The exam is currently in progress.</li>
  *     <li>{@code ALL_ANSWER_SUBMITTED}: All participants have submitted their answers.</li>
  *     <li>{@code EXAMINATION_COMPLETE}: The examination process is complete.</li>
+ *     <li>{@code PUBLISH_RESULT}: The result of the exam will be published via email and also be available at
+ *     candidate dashboard
+ *     .</li>
  * </ul>
  * </p>
  * <p>
@@ -27,9 +30,9 @@ import java.util.EnumSet;
  *
  */
 public enum ExamState {
-    PENDING, PUBLISHED, ON_GOING, ALL_ANSWER_SUBMITTED, EXAMINATION_COMPLETE;
+    PENDING, PUBLISHED, ON_GOING, ALL_ANSWER_SUBMITTED, EXAMINATION_COMPLETE, PUBLISH_RESULT;
 
-    private static final EnumSet<ExamState> EDITABLE_STATES = EnumSet.of(PENDING, PUBLISHED);
+    private static final EnumSet<ExamState> EDITABLE_STATES = EnumSet.of(PENDING, PUBLISHED, PUBLISH_RESULT);
 
     private static final EnumSet<ExamState> AUTOMATED_STATES = EnumSet.of(ON_GOING,
             ALL_ANSWER_SUBMITTED, EXAMINATION_COMPLETE);
