@@ -36,6 +36,9 @@ public class CandidateExamAnswerRecord implements Serializable {
     @Column(columnDefinition = "TEXT")
     private String answer;
 
+    @NotNull
+    private Integer marks;
+
     @CreationTimestamp
     private Date createdAt;
 

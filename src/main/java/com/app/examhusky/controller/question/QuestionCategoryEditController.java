@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/question_category/{id}")
-@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class QuestionCategoryEditController {
 
     private final QuestionCategoryService questionCategoryService;

@@ -25,6 +25,7 @@
                         <th scope="col">Start Date</th>
                         <th scope="col">Duration</th>
                         <th scope="col">State</th>
+                        <th scope="col">Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -33,6 +34,28 @@
                         <td th:text="${exam.getStartDate()}"></td>
                         <td th:text="${exam.getDuration()}"></td>
                         <td th:text="${exam.getState()}"></td>
+                        <td>
+                            <div class="d-flex flex-row">
+                                <!-- Examiner -->
+                                <div class="p-2">
+                                    <a class="btn btn-outline-info" th:href="@{'/exam/{id}/examiner'(id=${exam.id})}">
+                                        <i class="fas fa-book-reader"></i>
+                                    </a>
+                                </div>
+                                <!-- Question -->
+                                <div class="p-2">
+                                    <a class="btn btn-outline-info" th:href="@{'/exam/{id}/question'(id=${exam.id})}">
+                                        <i class="fas fa-book-open"></i>
+                                    </a>
+                                </div>
+                                <!-- Candidate -->
+                                <div class="p-2">
+                                    <a class="btn btn-outline-info" th:href="@{'/exam/{id}/candidate'(id=${exam.id})}">
+                                        <i class="fas fa-user-graduate"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                     </tbody>
                 </table>

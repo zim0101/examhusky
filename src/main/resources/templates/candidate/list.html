@@ -68,7 +68,7 @@
                 </div>
             </div>
 
-            <div>
+            <div class="table-responsive">
                 <table class="table" id="candidateTable">
                     <thead>
                     <tr>
@@ -84,8 +84,8 @@
                         <td th:text="${candidate.getAccount().getLastName()}"></td>
                         <td th:text="${candidate.getAccount().getDisabled() ? 'No' : 'Yes'}"></td>
                         <td >
-                            <div class="row d-flex justify-content-start">
-                                <div class="col-4" th:if="${candidate.getAccount().getDisabled()}">
+                            <div class="d-flex flex-row">
+                                <div class="p-2" th:if="${candidate.getAccount().getDisabled()}">
                                     <form action="#"
                                           th:object="${candidate}"
                                           th:action="@{'/candidate/{id}/enable'(id=${candidate.id})}"
@@ -96,7 +96,7 @@
                                         </button>
                                     </form>
                                 </div>
-                                <div class="col-4"
+                                <div class="p-2"
                                      th:unless="${candidate.getAccount().getDisabled()}">
                                     <form action="#"
                                           th:object="${candidate}"
@@ -108,13 +108,13 @@
                                         </button>
                                     </form>
                                 </div>
-                                <div class="col-4">
+                                <div class="p-2">
                                     <a class="btn btn-outline-info"
                                        th:href="@{'/candidate/{id}'(id=${candidate.id})}">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 </div>
-                                <div class="col-1">
+                                <div class="p-2">
                                     <form action="#"
                                           th:action="@{'/candidate/{id}'(id=${candidate.id})}"
                                           th:method="delete"

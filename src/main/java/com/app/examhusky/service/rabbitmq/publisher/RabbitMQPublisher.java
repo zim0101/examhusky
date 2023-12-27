@@ -13,8 +13,11 @@ public class RabbitMQPublisher {
     @Value("${examhusky.rabbitmq.exchange.email-exchange}")
     private String emailExchange;
 
-    @Value("${examhusky.rabbitmq.routing-key.user-registration}")
+    @Value("${examhusky.rabbitmq.routing-key.user-registration-email}")
     private String userRegistrationRoutingKey;
+
+    @Value("${examhusky.rabbitmq.routing-key.exam-update-email}")
+    private String examUpdateEmailRoutingKey;
 
     private final RabbitTemplate rabbitTemplate;
 
@@ -24,5 +27,9 @@ public class RabbitMQPublisher {
 
     public void sendUserRegistrationEmail(EmailDto emailDto) {
         rabbitTemplate.convertAndSend(emailExchange, userRegistrationRoutingKey, emailDto);
+    }
+
+    public void sendExamUpdateEmail(EmailDto emailDto) {
+        rabbitTemplate.convertAndSend(emailExchange, examUpdateEmailRoutingKey, emailDto);
     }
 }

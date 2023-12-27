@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfiguration {
 
+    // RabbitMQ server connection credentials
     @Value("${spring.rabbitmq.host}")
     private String host;
 
@@ -28,14 +29,24 @@ public class RabbitMQConfiguration {
     @Value("${spring.rabbitmq.password}")
     private String password;
 
+    // RabbitMQ Email exchange for all email queues
     @Value("${examhusky.rabbitmq.exchange.email-exchange}")
     private String emailExchange;
 
-    @Value("${examhusky.rabbitmq.queue.user-registration}")
-    private String userRegistrationQueue;
+    // User registration queue properties
+    @Value("${examhusky.rabbitmq.queue.user-registration-email}")
+    private String userRegistrationEmailQueue;
 
-    @Value("${examhusky.rabbitmq.routing-key.user-registration}")
-    private String userRegistrationRoutingKey;
+    @Value("${examhusky.rabbitmq.routing-key.user-registration-email}")
+    private String userRegistrationEmailRoutingKey;
+
+    // Exam update queue properties
+
+    @Value("${examhusky.rabbitmq.queue.exam-update-email}")
+    private String examUpdateEmailQueue;
+
+    @Value("${examhusky.rabbitmq.routing-key.exam-update-email}")
+    private String examUpdateEmailRoutingKey;
 
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -54,15 +65,28 @@ public class RabbitMQConfiguration {
 
     @Bean
     public Queue userRegistrationEmailQueue() {
-        return new Queue(userRegistrationQueue, true);
+        return new Queue(userRegistrationEmailQueue, true);
     }
 
     @Bean
-    public Binding bindingRegistration(Queue userRegistrationEmailQueue, DirectExchange emailExchange) {
+    public Binding bindingUserRegistrationEmailQueue(Queue userRegistrationEmailQueue, DirectExchange emailExchange) {
         return BindingBuilder
                 .bind(userRegistrationEmailQueue)
                 .to(emailExchange)
-                .with(userRegistrationRoutingKey);
+                .with(userRegistrationEmailRoutingKey);
+    }
+
+    @Bean
+    public Queue examUpdateEmailQueue() {
+        return new Queue(examUpdateEmailQueue, true);
+    }
+
+    @Bean
+    public Binding bindingExamUpdateEmailQueue(Queue examUpdateEmailQueue, DirectExchange emailExchange) {
+        return BindingBuilder
+                .bind(examUpdateEmailQueue)
+                .to(emailExchange)
+                .with(examUpdateEmailRoutingKey);
     }
 
     @Bean

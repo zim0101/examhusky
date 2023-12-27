@@ -114,13 +114,7 @@ public class AccountService {
         accountRepository.save(account);
         candidateRepository.save(candidate);
 
-        EmailDto emailDto = new EmailDto();
-        emailDto.setMailTo(account.getEmail());
-        emailDto.setMailSubject("Congratulation for your ExamHusky Registration");
-        emailDto.setContentType("text/plain; charset=\"utf-8\"");
-        emailDto.setMailContent("Your registration is complete!");
-
-        rabbitMQPublisher.sendUserRegistrationEmail(emailDto);
+        sendUserRegistrationEmail(account);
     }
 
     @Transactional
@@ -172,5 +166,15 @@ public class AccountService {
         candidate.setDeleted(Boolean.TRUE);
         candidateRepository.save(candidate);
         accountRepository.save(account);
+    }
+
+    public void sendUserRegistrationEmail(Account account) {
+        EmailDto emailDto = new EmailDto();
+        emailDto.setMailTo(account.getEmail());
+        emailDto.setMailSubject("Congratulation for your ExamHusky Registration");
+        emailDto.setContentType("text/plain; charset=\"utf-8\"");
+        emailDto.setMailContent("Your registration is complete!");
+
+        rabbitMQPublisher.sendUserRegistrationEmail(emailDto);
     }
 }

@@ -1,12 +1,18 @@
 package com.app.examhusky.repository;
 
+import com.app.examhusky.model.Account;
 import com.app.examhusky.model.Candidate;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
+
 public interface CandidateRepository extends JpaRepository<Candidate, Integer> {
+
+    Optional<Candidate> findByAccount(@NotNull Account account);
 
     Page<Candidate> findAllByDeletedFalse(Pageable pageable);
 
@@ -22,6 +28,16 @@ public interface CandidateRepository extends JpaRepository<Candidate, Integer> {
      * @param pageable Pagination information.
      * @return A pageable list of candidates not assigned to the specified exam.
      */
-    @Query("SELECT e FROM Candidate e LEFT JOIN e.exams ex WHERE ex.id <> :examId OR ex.id IS NULL")
+    @Query("""
+        select candidate
+        from Candidate candidate
+        where not exists (
+            select 1
+            from Exam exam
+            join exam.candidates as candidates
+            where exam.id = :examId
+            and candidate.id = candidates.id
+        )
+    """)
     Page<Candidate> findCandidatesNotAssignedToExam(Integer examId, Pageable pageable);
 }

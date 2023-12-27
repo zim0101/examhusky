@@ -68,7 +68,7 @@
                 </div>
             </div>
 
-            <div>
+            <div class="table-responsive">
                 <table class="table" id="examinerTable">
                     <thead>
                     <tr>
@@ -84,8 +84,8 @@
                         <td th:text="${examiner.getDesignation().getName()}"></td>
                         <td th:text="${examiner.getAccount().getDisabled() ? 'No' : 'Yes'}"></td>
                         <td >
-                            <div class="row d-flex justify-content-start">
-                                <div class="col-4" th:if="${examiner.getAccount().getDisabled()}">
+                            <div class="d-flex flex-row">
+                                <div class="p-2" th:if="${examiner.getAccount().getDisabled()}">
                                     <form action="#"
                                           th:object="${examiner}"
                                           th:action="@{'/examiner/{id}/enable'(id=${examiner.id})}"
@@ -96,7 +96,7 @@
                                         </button>
                                     </form>
                                 </div>
-                                <div class="col-4" th:unless="${examiner.getAccount().getDisabled()}">
+                                <div class="p-2" th:unless="${examiner.getAccount().getDisabled()}">
                                     <form action="#"
                                           th:object="${examiner}"
                                           th:action="@{'/examiner/{id}/disable'(id=${examiner.id})}"
@@ -107,13 +107,13 @@
                                         </button>
                                     </form>
                                 </div>
-                                <div class="col-4">
+                                <div class="p-2">
                                     <a class="btn btn-outline-info"
                                        th:href="@{'/examiner/{id}'(id=${examiner.id})}">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 </div>
-                                <div class="col-1">
+                                <div class="p-2">
                                     <form action="#"
                                           th:action="@{'/examiner/{id}'(id=${examiner.id})}"
                                           th:method="delete"

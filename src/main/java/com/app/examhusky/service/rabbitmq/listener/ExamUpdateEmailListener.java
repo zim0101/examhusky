@@ -6,16 +6,15 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserRegistrationEmailListener {
-
+public class ExamUpdateEmailListener {
     private final EmailService emailService;
 
-    public UserRegistrationEmailListener(EmailService emailService) {
+    public ExamUpdateEmailListener(EmailService emailService) {
         this.emailService = emailService;
     }
 
-    @RabbitListener(queues = "${examhusky.rabbitmq.queue.user-registration-email}")
-    public void processUserRegistrationEmail(EmailDto emailDto) {
+    @RabbitListener(queues = "${examhusky.rabbitmq.queue.exam-update-email}")
+    public void processExamUpdateEmail(EmailDto emailDto) {
         emailService.sendMail(emailDto);
     }
 }

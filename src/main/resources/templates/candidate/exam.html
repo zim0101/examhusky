@@ -11,11 +11,7 @@
             <br>
             <div class="content-header row align-items-center">
                 <div class="col-auto col-md-10 col-xl-10 px-sm-10">
-                    <h6>Question Category</h6>
-                </div>
-                <div class="col-auto col-md-2 col-xl-2">
-                    <a th:href="@{/question_category/new}" type="button"
-                       class="btn btn-outline-success">Create</a>
+                    <h6>Exam</h6>
                 </div>
             </div>
             <hr>
@@ -23,15 +19,20 @@
             <br>
             <div class="row">
                 <div class="col-12">
-                    <form th:action="@{/question_category}">
+                    <form th:action="@{/candidate/exams}">
                         <div class="row">
                             <div class="col-md-2 form-group">
                                 <label for="sortField">Field</label>
                                 <select name="sortField" id="sortField" class="form-control">
                                     <option
-                                            th:selected="${session.containsKey('sortField') && session.sortField == 'title'}"
-                                            value="title">
-                                        Title
+                                            th:selected="${session.containsKey('sortField') && session.sortField == 'startDate'}"
+                                            value="startDate">
+                                        Start Date
+                                    </option>
+                                    <option
+                                            th:selected="${session.containsKey('sortField') && session.sortField == 'state'}"
+                                            value="state">
+                                        State
                                     </option>
                                 </select>
                             </div>
@@ -64,86 +65,56 @@
             </div>
 
             <div class="table-responsive">
-                <table class="table" id="questionCategoryTable">
+                <table class="table" id="examTable">
                     <thead>
                     <tr>
                         <th scope="col">Title</th>
-                        <th scope="col">Disabled</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Duration</th>
                         <th scope="col">Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="questionCategory : ${questionCategoryList}">
-                        <td th:text="${questionCategory.getTitle()}"></td>
-                        <td th:text="${questionCategory.getDisabled()}"></td>
+                    <tr th:each="exam : ${examList}">
+                        <td th:text="${exam.getTitle()}"></td>
+                        <td th:text="${exam.getStartDate()}"></td>
+                        <td th:text="${exam.getDuration()}"></td>
                         <td >
                             <div class="d-flex flex-row">
-                                <div class="p-2" th:if="${questionCategory.disabled}">
-                                    <form action="#"
-                                          th:object="${questionCategory}"
-                                          th:action="@{'/question_category/{id}/enable'(id=${questionCategory.id})}"
-                                          th:method="put"
-                                          onsubmit="return confirm('Do you really want to enable?');">
-                                        <button type="submit" class="btn btn-outline-success">
-                                            <i class="far fa-check-square"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                                <div class="p-2" th:unless="${questionCategory.disabled}">
-                                    <form action="#"
-                                          th:object="${questionCategory}"
-                                          th:action="@{'/question_category/{id}/disable'(id=${questionCategory.id})}"
-                                          th:method="put"
-                                          onsubmit="return confirm('Do you really want to disable?');">
-                                        <button type="submit" class="btn btn-outline-warning">
-                                            <i class="fas fa-ban"></i>
-                                        </button>
-                                    </form>
-                                </div>
+                                <!-- Edit -->
                                 <div class="p-2">
                                     <a class="btn btn-outline-info"
-                                       th:href="@{'/question_category/{id}'(id=${questionCategory.id})}">
-                                        <i class="fas fa-edit"></i>
+                                       th:href="@{'/candidate/exam/{id}/answer_paper'(id=${exam.id})}">
+                                        <i class="fas fa-paste"></i>
                                     </a>
                                 </div>
-                                <div class="p-2">
-                                    <form action="#"
-                                          th:action="@{'/question_category/{id}'(id=${questionCategory.id})}"
-                                          th:method="delete"
-                                          onsubmit="return confirm('Do you really want to delete?');">
-                                        <button type="submit" class="btn btn-outline-danger">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                                <div class="p-2"></div>
                             </div>
                         </td>
                     </tr>
                     </tbody>
                 </table>
-                <!-- questionCategoryList pagination -->
-                <nav aria-label="Pagination" th:if="${questionCategoryList.totalPages gt 0}">
+                <!-- examList pagination -->
+                <nav aria-label="Pagination" th:if="${examList.totalPages gt 0}">
                     <ul class="pagination justify-content-center font-weight-bold">
-                        <li class="page-item" th:classappend="${questionCategoryList.number eq 0} ? 'disabled'">
+                        <li class="page-item" th:classappend="${examList.number eq 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{'/question_category?page={id}'(id=${questionCategoryList.number lt 2 ? 1 : questionCategoryList.number})}"
+                               th:href="@{'/exam?page={id}'(id=${examList.number lt 2 ? 1 : examList.number})}"
                                aria-label="Previous" title="Previous Page" data-toggle="tooltip">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item"
-                            th:classappend="${i eq questionCategoryList.number + 1} ? 'active'"
-                            th:each="i : ${#numbers.sequence( 1, questionCategoryList.totalPages, 1)}">
+                            th:classappend="${i eq examList.number + 1} ? 'active'"
+                            th:each="i : ${#numbers.sequence( 1, examList.totalPages, 1)}">
                             <a class="page-link"
-                               th:href="@{'/question_category?page={id}'(id=${i})}"
+                               th:href="@{'/exam?page={id}'(id=${i})}"
                                th:text="${i}"
                                th:title="${'Page '+ i}" data-toggle="tooltip"></a>
                         </li>
                         <li class="page-item"
-                            th:classappend="${questionCategoryList.number + 1 eq questionCategoryList.totalPages} ? 'disabled'">
+                            th:classappend="${examList.number + 1 eq examList.totalPages} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{'/question_category?page={id}'(id=${questionCategoryList.number + 2})}"
+                               th:href="@{'/exam?page={id}'(id=${examList.number + 2})}"
                                aria-label="Next" title="Next Page" data-toggle="tooltip">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>

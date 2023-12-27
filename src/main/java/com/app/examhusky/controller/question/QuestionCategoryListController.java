@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/question_category")
-@PreAuthorize("hasRole('ROLE_ADMIN') && hasRole('ROLE_EXAMINER')")
 public class QuestionCategoryListController {
 
     private final QuestionCategoryService questionCategoryService;
