@@ -1,8 +1,6 @@
 package com.app.examhusky.repository;
 
-import com.app.examhusky.model.Candidate;
 import com.app.examhusky.model.Exam;
-import com.app.examhusky.model.Examiner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
