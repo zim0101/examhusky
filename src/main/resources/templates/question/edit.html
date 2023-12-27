@@ -13,6 +13,7 @@
                     <h6>Edit Question</h6>
                     <hr>
                     <form th:object="${question}" th:method="put">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <div class="mb-3">
                             <label for="label" class="form-label">Question</label>
                             <input type="text" class="form-control" id="label"
