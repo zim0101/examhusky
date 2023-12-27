@@ -73,7 +73,7 @@
                 </div>
             </div>
 
-            <div>
+            <div class="table-responsive">
                 <table class="table" id="questionTable">
                     <thead>
                     <tr>
@@ -91,8 +91,8 @@
                         <td th:text="${question.getEditor().getFullName()}"></td>
                         <td th:text="${question.getDisabled()}"></td>
                         <td >
-                            <div class="row d-flex justify-content-start">
-                                <div class="col-4" th:if="${question.disabled}">
+                            <div class="d-flex flex-row">
+                                <div class="p-2" th:if="${question.disabled}">
                                     <form action="#"
                                           th:object="${question}"
                                           th:action="@{'/question/{id}/enable'(id=${question.id})}"
@@ -103,7 +103,7 @@
                                         </button>
                                     </form>
                                 </div>
-                                <div class="col-4" th:unless="${question.disabled}">
+                                <div class="p-2" th:unless="${question.disabled}">
                                     <form action="#"
                                           th:object="${question}"
                                           th:action="@{'/question/{id}/disable'(id=${question.id})}"
@@ -114,13 +114,13 @@
                                         </button>
                                     </form>
                                 </div>
-                                <div class="col-4">
+                                <div class="p-2">
                                     <a class="btn btn-outline-info"
                                        th:href="@{'/question/{id}'(id=${question.id})}">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 </div>
-                                <div class="col-1">
+                                <div class="p-2">
                                     <form action="#"
                                           th:action="@{'/question/{id}'(id=${question.id})}"
                                           th:method="delete"

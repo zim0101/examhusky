@@ -38,6 +38,6 @@ public class CandidateExamListController {
 
     @GetMapping
     public String paginatedList() {
-        return "exam/candidate_exam_list";
+        return "candidate/exam";
     }
 }

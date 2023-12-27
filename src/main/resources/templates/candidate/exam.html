@@ -64,7 +64,7 @@
                 </div>
             </div>
 
-            <div>
+            <div class="table-responsive">
                 <table class="table" id="examTable">
                     <thead>
                     <tr>
@@ -80,9 +80,9 @@
                         <td th:text="${exam.getStartDate()}"></td>
                         <td th:text="${exam.getDuration()}"></td>
                         <td >
-                            <div class="row d-flex justify-content-start">
+                            <div class="d-flex flex-row">
                                 <!-- Edit -->
-                                <div class="col-2">
+                                <div class="p-2">
                                     <a class="btn btn-outline-info"
                                        th:href="@{'/candidate/exam/{id}/answer_paper'(id=${exam.id})}">
                                         <i class="fas fa-paste"></i>

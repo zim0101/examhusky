@@ -63,7 +63,7 @@
                 </div>
             </div>
 
-            <div>
+            <div class="table-responsive">
                 <table class="table" id="questionCategoryTable">
                     <thead>
                     <tr>
@@ -77,8 +77,8 @@
                         <td th:text="${questionCategory.getTitle()}"></td>
                         <td th:text="${questionCategory.getDisabled()}"></td>
                         <td >
-                            <div class="row d-flex justify-content-end">
-                                <div class="col-1" th:if="${questionCategory.disabled}">
+                            <div class="d-flex flex-row">
+                                <div class="p-2" th:if="${questionCategory.disabled}">
                                     <form action="#"
                                           th:object="${questionCategory}"
                                           th:action="@{'/question_category/{id}/enable'(id=${questionCategory.id})}"
@@ -89,7 +89,7 @@
                                         </button>
                                     </form>
                                 </div>
-                                <div class="col-1" th:unless="${questionCategory.disabled}">
+                                <div class="p-2" th:unless="${questionCategory.disabled}">
                                     <form action="#"
                                           th:object="${questionCategory}"
                                           th:action="@{'/question_category/{id}/disable'(id=${questionCategory.id})}"
@@ -100,13 +100,13 @@
                                         </button>
                                     </form>
                                 </div>
-                                <div class="col-1">
+                                <div class="p-2">
                                     <a class="btn btn-outline-info"
                                        th:href="@{'/question_category/{id}'(id=${questionCategory.id})}">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 </div>
-                                <div class="col-1">
+                                <div class="p-2">
                                     <form action="#"
                                           th:action="@{'/question_category/{id}'(id=${questionCategory.id})}"
                                           th:method="delete"
@@ -116,7 +116,7 @@
                                         </button>
                                     </form>
                                 </div>
-                                <div class="col-10"></div>
+                                <div class="p-2"></div>
                             </div>
                         </td>
                     </tr>

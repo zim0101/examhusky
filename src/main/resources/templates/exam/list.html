@@ -73,8 +73,8 @@
                 </div>
             </div>
 
-            <div>
-                <table class="table table-responsive" id="examTable">
+            <div class="table-responsive">
+                <table class="table" id="examTable">
                     <thead>
                     <tr>
                         <th scope="col">Title</th>
@@ -96,20 +96,17 @@
                         <td th:text="${exam.questions.size()}"></td>
                         <td th:text="${exam.examiners.size()}"></td>
                         <td th:text="${exam.getState()}"></td>
-                        <td >
-                            <div class="row d-flex justify-content-start">
+                        <td>
+                            <div class="d-flex flex-row">
                                 <!-- Edit -->
-                                <div class="col-2">
-                                    <a class="btn btn-outline-info"
-                                       th:href="@{'/exam/{id}'(id=${exam.id})}">
+                                <div class="p-2">
+                                    <a class="btn btn-outline-info" th:href="@{'/exam/{id}'(id=${exam.id})}">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 </div>
                                 <!-- Publish -->
-                                <div class="col-2"
-                                     th:if="${exam.getState() == T(com.app.examhusky.model.enums.ExamState).PENDING}">
-                                    <form th:action="@{'/exam/{id}/publish'(id=${exam.id})}"
-                                          th:method="put"
+                                <div class="p-2" th:if="${exam.getState() == T(com.app.examhusky.model.enums.ExamState).PENDING}">
+                                    <form th:action="@{'/exam/{id}/publish'(id=${exam.id})}" th:method="put"
                                           onsubmit="return confirm('Do you really want to delete?');">
                                         <button type="submit" class="btn btn-outline-success">
                                             <i class="fas fa-play-circle"></i>
@@ -117,30 +114,26 @@
                                     </form>
                                 </div>
                                 <!-- Examiner -->
-                                <div class="col-2">
-                                    <a class="btn btn-outline-info"
-                                       th:href="@{'/exam/{id}/examiner'(id=${exam.id})}">
+                                <div class="p-2">
+                                    <a class="btn btn-outline-info" th:href="@{'/exam/{id}/examiner'(id=${exam.id})}">
                                         <i class="fas fa-book-reader"></i>
                                     </a>
                                 </div>
                                 <!-- Question -->
-                                <div class="col-2">
-                                    <a class="btn btn-outline-info"
-                                       th:href="@{'/exam/{id}/question'(id=${exam.id})}">
+                                <div class="p-2">
+                                    <a class="btn btn-outline-info" th:href="@{'/exam/{id}/question'(id=${exam.id})}">
                                         <i class="fas fa-book-open"></i>
                                     </a>
                                 </div>
                                 <!-- Candidate -->
-                                <div class="col-2">
-                                    <a class="btn btn-outline-info"
-                                       th:href="@{'/exam/{id}/candidate'(id=${exam.id})}">
+                                <div class="p-2">
+                                    <a class="btn btn-outline-info" th:href="@{'/exam/{id}/candidate'(id=${exam.id})}">
                                         <i class="fas fa-user-graduate"></i>
                                     </a>
                                 </div>
                                 <!-- Delete -->
-                                <div class="col-2">
-                                    <form th:action="@{'/exam/{id}'(id=${exam.id})}"
-                                          th:method="delete"
+                                <div class="p-2">
+                                    <form th:action="@{'/exam/{id}'(id=${exam.id})}" th:method="delete"
                                           onsubmit="return confirm('Do you really want to delete?');">
                                         <button type="submit" class="btn btn-outline-danger">
                                             <i class="fas fa-trash-alt"></i>
