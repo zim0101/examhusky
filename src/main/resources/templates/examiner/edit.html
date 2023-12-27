@@ -13,6 +13,7 @@
                     <h6>Create Examiner</h6>
                     <hr>
                     <form th:object="${examiner}" th:method="put">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <div class="form-group mb-3">
                             <label for="username" class="form-label">Username</label>
                             <input type="text" class="form-control" id="username"
