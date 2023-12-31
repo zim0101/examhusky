@@ -47,10 +47,6 @@ public class ExamService {
                 new EntityNotFoundException("Exam not found!"));
     }
 
-    public boolean isCandidateAssignedToExam(Integer examId, Integer candidateId) {
-        return examRepository.isCandidateAssignedToExam(examId, candidateId);
-    }
-
     public Page<Exam> sortAndPaginateAllActiveExams(HttpSession session,
                                           Optional<Integer> page,
                                           Optional<Integer> size,

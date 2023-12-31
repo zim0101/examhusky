@@ -24,16 +24,13 @@ public class CandidateExamAnswerRecordController {
     private final ExamService examService;
     private final CandidateService candidateService;
     private final CandidateExamAnswerRecordService candidateExamAnswerRecordService;
-    private final EncryptionService encryptionService;
 
     public CandidateExamAnswerRecordController(ExamService examService,
                                                CandidateService candidateService,
-                                               CandidateExamAnswerRecordService candidateExamAnswerRecordService,
-                                               EncryptionService encryptionService) {
+                                               CandidateExamAnswerRecordService candidateExamAnswerRecordService) {
         this.examService = examService;
         this.candidateService = candidateService;
         this.candidateExamAnswerRecordService = candidateExamAnswerRecordService;
-        this.encryptionService = encryptionService;
     }
 
     @InitBinder
@@ -53,21 +50,7 @@ public class CandidateExamAnswerRecordController {
 
     @ModelAttribute("candidateExamAnswerRecordList")
     public List<CandidateExamAnswerRecord> addCandidateExamAnswerRecordListToModel(@PathVariable Integer id) {
-        List<CandidateExamAnswerRecord> records = candidateExamAnswerRecordService
-                .getQuestionAndAnswerRecordOfCandidateExam(
-                        id,
-                        candidateService.findCandidateByCurrentAuthAccount().getId()
-                );
-
-        records.forEach((record) -> {
-            try {
-                record.setEncryptedId(encryptionService.encrypt(record.getId().toString()));
-            } catch (EncryptionService.EncryptionException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        return records;
+        return candidateExamAnswerRecordService.getQuestionAndAnswerRecordOfExamForCandidate(id);
     }
 
     @GetMapping
@@ -79,9 +62,7 @@ public class CandidateExamAnswerRecordController {
     public String updateCandidateExamAnswers(@RequestParam("recordId") List<String> recordIds,
                                              @RequestParam("answer") List<String> answers) {
         try {
-            candidateExamAnswerRecordService.submitOrUpdateAnswerPaper(
-                    recordIds, answers
-            );
+            candidateExamAnswerRecordService.submitOrUpdateAnswerPaper(recordIds, answers);
         } catch (EncryptionService.EncryptionException e) {
             throw new RuntimeException(e);
         }
