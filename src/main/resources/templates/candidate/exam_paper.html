@@ -1,10 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:insert="layout/header"></th:block>
 <body>
+<th:block th:insert="~{layout/navbar}"></th:block>
+<div class="container-fluid">
+    <div class="row">
+        <th:block th:insert="~{layout/sidebar}"></th:block>
+        <div class="content col-sm min-vh-100">
+            <!-- content -->
+            <br>
+            <div class="content-header row align-items-center">
+                <div class="col-auto col-md-10 col-xl-10 px-sm-10">
+                    <h6>Exam</h6>
+                </div>
+            </div>
+            <hr>
+            <br>
+            <br>
 
+            <div>
+                <form th:action="@{'/candidate/exam/{id}'(id=${exam.getId()})}" th:method="put">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Answer</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="record, row : ${candidateExamAnswerRecordList}">
+                            <td th:text="${record.getQuestion().getTitle()}"></td>
+                            <td>
+                                <label>
+                                    <input type="hidden" th:value="${record.encryptedId}" th:name="'recordId'">
+                                </label>
+                                <label>
+                                    <textarea th:name="'answer'" cols="100" th:text="${record.answer}"></textarea>
+                                </label>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-outline-success" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:insert="~{layout/js_urls}"></th:block>
 </body>
 </html>

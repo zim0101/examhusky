@@ -21,6 +21,9 @@ public class CandidateExamAnswerRecord implements Serializable {
             "candidate_exam_answer_record_seq")
     private Integer id;
 
+    @Transient
+    private String encryptedId;
+
     @ManyToOne
     @NotNull
     private Candidate candidate;
@@ -37,7 +40,7 @@ public class CandidateExamAnswerRecord implements Serializable {
     private String answer;
 
     @NotNull
-    private Integer marks;
+    private Integer marks = 0;
 
     @CreationTimestamp
     private Date createdAt;
