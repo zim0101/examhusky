@@ -109,6 +109,16 @@
                                     <form th:action="@{'/exam/{id}/publish'(id=${exam.id})}" th:method="put"
                                           onsubmit="return confirm('Do you really want to delete?');">
                                         <button type="submit" class="btn btn-outline-success">
+                                            <i class="fas fa-upload"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <!-- Start -->
+                                <div class="p-2"
+                                     th:if="${exam.getState() == T(com.app.examhusky.model.enums.ExamState).PUBLISHED}">
+                                    <form th:action="@{'/exam/{id}/start'(id=${exam.id})}" th:method="put"
+                                          onsubmit="return confirm('Do you really want to delete?');">
+                                        <button type="submit" class="btn btn-outline-success">
                                             <i class="fas fa-play-circle"></i>
                                         </button>
                                     </form>
