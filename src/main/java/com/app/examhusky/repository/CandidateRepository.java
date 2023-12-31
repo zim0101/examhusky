@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -40,4 +41,7 @@ public interface CandidateRepository extends JpaRepository<Candidate, Integer> {
         )
     """)
     Page<Candidate> findCandidatesNotAssignedToExam(Integer examId, Pageable pageable);
+
+    @Query("SELECT COUNT(c) > 0 FROM Candidate c JOIN c.exams e WHERE c.id = :candidateId AND e.id = :examId")
+    boolean isCandidateAssignedToExam(@Param("candidateId") Integer candidateId, @Param("examId") Integer examId);
 }

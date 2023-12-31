@@ -25,7 +25,7 @@ public class CandidateExamResult {
     private Exam exam;
 
     @NotNull
-    private Integer total_marks;
+    private Integer totalMarks;
 
     @NotNull
     private Boolean recommended;

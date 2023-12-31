@@ -40,7 +40,7 @@
                             <select class="form-control" th:field="*{state}" id="state">
                                 <option label="-- Select an option --" value=""></option>
                                 <option
-                                        th:each="state : ${T(com.app.examhusky.model.enums.ExamState).getEditableStates()}"
+                                        th:each="state : ${T(com.app.examhusky.model.enums.ExamState).values()}"
                                         th:value="${state}"
                                         th:text="${state}"
                                         th:selected="${exam.getState() != null and exam.getState() == state}">

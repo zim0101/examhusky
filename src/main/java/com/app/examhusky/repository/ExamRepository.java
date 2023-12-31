@@ -17,7 +17,4 @@ public interface ExamRepository extends JpaRepository<Exam, Integer> {
     Page<Exam> findByCandidates_IdOrderByStartDateDesc(Integer candidateId, Pageable pageable);
 
     Page<Exam> findByCandidates_Id(Integer candidateId, Pageable pageable);
-
-    @Query("SELECT 1 FROM Exam e JOIN e.candidates c WHERE e.id = :examId AND c.id = :candidateId")
-    boolean isCandidateAssignedToExam(Integer examId, Integer candidateId);
 }

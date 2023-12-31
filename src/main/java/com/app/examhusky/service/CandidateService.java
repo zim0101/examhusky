@@ -65,4 +65,8 @@ public class CandidateService {
         return candidateRepository.findByAccount(authUserService.currentAuthAccount()).orElseThrow(() ->
                 new EntityNotFoundException("Candidate not found"));
     }
+
+    public boolean isCandidateAssignedToExam(Integer candidateId, Integer examId) {
+        return candidateRepository.isCandidateAssignedToExam(candidateId, examId);
+    }
 }
