@@ -3,10 +3,7 @@ package com.app.examhusky.service;
 import com.app.examhusky.dto.EmailDto;
 import com.app.examhusky.model.*;
 import com.app.examhusky.model.enums.ExamState;
-import com.app.examhusky.repository.CandidateRepository;
-import com.app.examhusky.repository.ExamRepository;
-import com.app.examhusky.repository.ExaminerRepository;
-import com.app.examhusky.repository.QuestionRepository;
+import com.app.examhusky.repository.*;
 import com.app.examhusky.service.rabbitmq.publisher.RabbitMQPublisher;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
@@ -23,6 +20,7 @@ public class ExamService {
     private final ExaminerRepository examinerRepository;
     private final CandidateRepository candidateRepository;
     private final QuestionRepository questionRepository;
+    private final CandidateExamAnswerRecordService candidateExamAnswerRecordService;
     private final SortingAndPaginationService sortingAndPaginationService;
     private final RabbitMQPublisher rabbitMQPublisher;
 
@@ -31,6 +29,7 @@ public class ExamService {
                        ExaminerRepository examinerRepository,
                        CandidateRepository candidateRepository,
                        QuestionRepository questionRepository,
+                       CandidateExamAnswerRecordService candidateExamAnswerRecordService,
                        SortingAndPaginationService sortingAndPaginationService,
                        RabbitMQPublisher rabbitMQPublisher) {
         this.authUserService = authUserService;
@@ -38,6 +37,7 @@ public class ExamService {
         this.examinerRepository = examinerRepository;
         this.candidateRepository = candidateRepository;
         this.questionRepository = questionRepository;
+        this.candidateExamAnswerRecordService = candidateExamAnswerRecordService;
         this.sortingAndPaginationService = sortingAndPaginationService;
         this.rabbitMQPublisher = rabbitMQPublisher;
     }
@@ -45,6 +45,10 @@ public class ExamService {
     public Exam findById(Integer id) {
         return examRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Exam not found!"));
+    }
+
+    public boolean isCandidateAssignedToExam(Integer examId, Integer candidateId) {
+        return examRepository.isCandidateAssignedToExam(examId, candidateId);
     }
 
     public Page<Exam> sortAndPaginateAllActiveExams(HttpSession session,
@@ -100,10 +104,12 @@ public class ExamService {
         }
     }
 
+    @Transactional
     public void publish(Integer id) {
         Exam exam = findById(id);
         exam.setState(ExamState.PUBLISHED);
         examRepository.save(exam);
+        candidateExamAnswerRecordService.initExamPaperForAllCandidatesOfExam(exam.getId());
         sendExamPublishNotificationToAll(exam);
     }
 
