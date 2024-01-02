@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
+import java.util.Calendar;
 
 @Service
 public class ExamService {
@@ -21,6 +22,7 @@ public class ExamService {
     private final CandidateRepository candidateRepository;
     private final QuestionRepository questionRepository;
     private final CandidateExamAnswerRecordService candidateExamAnswerRecordService;
+    private final CandidateExamResultService candidateExamResultService;
     private final SortingAndPaginationService sortingAndPaginationService;
     private final RabbitMQPublisher rabbitMQPublisher;
 
@@ -30,6 +32,7 @@ public class ExamService {
                        CandidateRepository candidateRepository,
                        QuestionRepository questionRepository,
                        CandidateExamAnswerRecordService candidateExamAnswerRecordService,
+                       CandidateExamResultService candidateExamResultService,
                        SortingAndPaginationService sortingAndPaginationService,
                        RabbitMQPublisher rabbitMQPublisher) {
         this.authUserService = authUserService;
@@ -38,6 +41,7 @@ public class ExamService {
         this.candidateRepository = candidateRepository;
         this.questionRepository = questionRepository;
         this.candidateExamAnswerRecordService = candidateExamAnswerRecordService;
+        this.candidateExamResultService = candidateExamResultService;
         this.sortingAndPaginationService = sortingAndPaginationService;
         this.rabbitMQPublisher = rabbitMQPublisher;
     }
@@ -105,8 +109,20 @@ public class ExamService {
         Exam exam = findById(id);
         exam.setState(ExamState.PUBLISHED);
         examRepository.save(exam);
-        candidateExamAnswerRecordService.initExamPaperForAllCandidatesOfExam(exam.getId());
         sendExamPublishNotificationToAll(exam);
+    }
+
+    public void start(Integer id) {
+        Exam exam = findById(id);
+        exam.setState(ExamState.ON_GOING);
+        exam.setStartDate(Calendar.getInstance().getTime());
+        examRepository.save(exam);
+    }
+
+    public void stop(Integer id) {
+        Exam exam = findById(id);
+        exam.setState(ExamState.ENDED);
+        examRepository.save(exam);
     }
 
     public void softDelete(Exam exam) {
@@ -130,71 +146,89 @@ public class ExamService {
     @Transactional
     public void removeExaminerFromExam(Integer examinerId, Integer examId) {
         Exam exam = findById(examId);
-        Examiner examiner = examinerRepository.findById(examinerId).orElseThrow(() ->
-                new EntityNotFoundException("Examiner not found"));
-        examiner.getExams().remove(exam);
-        exam.getExaminers().remove(examiner);
-        examinerRepository.save(examiner);
-        examRepository.save(exam);
+        if (exam.getExaminers().size() > 1 &&
+                exam.getState().equals(ExamState.PENDING) ||
+                exam.getState().equals(ExamState.PUBLISHED) ||
+                exam.getState().equals(ExamState.ON_GOING)) {
+            Examiner examiner = examinerRepository.findById(examinerId).orElseThrow(() ->
+                    new EntityNotFoundException("Examiner not found"));
+            examiner.getExams().remove(exam);
+            exam.getExaminers().remove(examiner);
+            examinerRepository.save(examiner);
+            examRepository.save(exam);
 
-        sendExamInvitationCancelEmail(examiner.getAccount(), exam);
+            sendExamInvitationCancelEmail(examiner.getAccount(), exam);
+        }
     }
 
     @Transactional
     public void addCandidateToExam(Integer candidateId, Integer examId) {
         Exam exam = findById(examId);
-        Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() ->
-                new EntityNotFoundException("Candidate not found"));
-        candidate.getExams().add(exam);
-        exam.getCandidates().add(candidate);
-        candidateRepository.save(candidate);
-        examRepository.save(exam);
-
-        sendExamInvitationEmail(candidate.getAccount(), exam);
+        if (exam.getState().equals(ExamState.PENDING) || exam.getState().equals(ExamState.PUBLISHED)) {
+            Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() ->
+                    new EntityNotFoundException("Candidate not found"));
+            candidate.getExams().add(exam);
+            exam.getCandidates().add(candidate);
+            candidateRepository.save(candidate);
+            examRepository.save(exam);
+            if (exam.getState().equals(ExamState.PUBLISHED)) {
+                sendExamInvitationEmail(candidate.getAccount(), exam);
+            }
+        }
     }
 
     @Transactional
     public void removeCandidateFromExam(Integer candidateId, Integer examId) {
         Exam exam = findById(examId);
-        Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() ->
-                new EntityNotFoundException("Candidate not found"));
-        candidate.getExams().remove(exam);
-        exam.getCandidates().remove(candidate);
-        candidateRepository.save(candidate);
-        examRepository.save(exam);
-
-        sendExamInvitationCancelEmail(candidate.getAccount(), exam);
+        if (exam.getState().equals(ExamState.PENDING) || exam.getState().equals(ExamState.PUBLISHED)) {
+            Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() ->
+                    new EntityNotFoundException("Candidate not found"));
+            candidate.getExams().remove(exam);
+            exam.getCandidates().remove(candidate);
+            candidateRepository.save(candidate);
+            examRepository.save(exam);
+            if (exam.getState().equals(ExamState.PUBLISHED)) {
+                sendExamInvitationCancelEmail(candidate.getAccount(), exam);
+            }
+        }
     }
 
     @Transactional
     public void addQuestionToExam(Integer questionId, Integer examId) {
         Exam exam = findById(examId);
-        Question question = questionRepository.findById(questionId).orElseThrow(() ->
-                new EntityNotFoundException("Question not found"));
-        question.getExams().add(exam);
-        exam.getQuestions().add(question);
-        questionRepository.save(question);
-        examRepository.save(exam);
+        if (exam.getState().equals(ExamState.PENDING) || exam.getState().equals(ExamState.PUBLISHED)) {
+            Question question = questionRepository.findById(questionId).orElseThrow(() ->
+                    new EntityNotFoundException("Question not found"));
+            question.getExams().add(exam);
+            exam.getQuestions().add(question);
+            questionRepository.save(question);
+            examRepository.save(exam);
+        }
     }
 
     @Transactional
     public void removeQuestionFromExam(Integer questionId, Integer examId) {
         Exam exam = findById(examId);
-        Question question = questionRepository.findById(questionId).orElseThrow(() ->
-                new EntityNotFoundException("Question not found"));
-        question.getExams().remove(exam);
-        exam.getQuestions().remove(question);
-        questionRepository.save(question);
-        examRepository.save(exam);
+        if (exam.getState().equals(ExamState.PENDING) || exam.getState().equals(ExamState.PUBLISHED)) {
+            Question question = questionRepository.findById(questionId).orElseThrow(() ->
+                    new EntityNotFoundException("Question not found"));
+            question.getExams().remove(exam);
+            exam.getQuestions().remove(question);
+            questionRepository.save(question);
+            examRepository.save(exam);
+        }
+    }
+
+    @Transactional
+    public void prepareEmptyExamPaperAndInitResult(Integer id) {
+        Exam exam = findById(id);
+        candidateExamAnswerRecordService.initExamPaperForAuthenticatedCandidate(exam);
+        candidateExamResultService.initExamResultForAuthenticatedCandidate(exam);
     }
 
     public void sendExamUpdateNotificationToAll(Exam exam) {
-        exam.getExaminers().forEach(examiner -> {
-            buildAndSendExamUpdateEmailToQueue(examiner.getAccount(), exam);
-        });
-        exam.getCandidates().forEach(candidate -> {
-            buildAndSendExamUpdateEmailToQueue(candidate.getAccount(), exam);
-        });
+        exam.getExaminers().forEach(examiner -> buildAndSendExamUpdateEmailToQueue(examiner.getAccount(), exam));
+        exam.getCandidates().forEach(candidate -> buildAndSendExamUpdateEmailToQueue(candidate.getAccount(), exam));
     }
 
     public void buildAndSendExamUpdateEmailToQueue(Account account, Exam exam) {
@@ -208,12 +242,8 @@ public class ExamService {
     }
 
     public void sendExamPublishNotificationToAll(Exam exam) {
-        exam.getExaminers().forEach(examiner -> {
-            buildAndSendExamPublishEmailToQueue(examiner.getAccount(), exam);
-        });
-        exam.getCandidates().forEach(candidate -> {
-            buildAndSendExamPublishEmailToQueue(candidate.getAccount(), exam);
-        });
+        exam.getExaminers().forEach(examiner -> buildAndSendExamPublishEmailToQueue(examiner.getAccount(), exam));
+        exam.getCandidates().forEach(candidate -> buildAndSendExamPublishEmailToQueue(candidate.getAccount(), exam));
     }
 
     public void buildAndSendExamPublishEmailToQueue(Account account, Exam exam) {

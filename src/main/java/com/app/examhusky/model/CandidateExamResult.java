@@ -1,5 +1,6 @@
 package com.app.examhusky.model;
 
+import com.app.examhusky.model.enums.Recommendation;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -25,12 +26,18 @@ public class CandidateExamResult {
     private Exam exam;
 
     @NotNull
-    private Integer totalMarks;
+    private Integer totalMarks = 0;
 
     @NotNull
-    private Boolean recommended;
+    private Boolean examined = false;
+
+    @NotNull
+    private Recommendation recommendation = Recommendation.NOT_DECIDED;
+
+    @NotNull
+    private Boolean published = false;
 
     @ManyToOne
     @NotNull
-    private Examiner decidedBy;
+    private Account decidedBy;
 }

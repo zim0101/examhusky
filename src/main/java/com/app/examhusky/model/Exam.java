@@ -28,7 +28,6 @@ public class Exam implements Serializable {
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @NotNull
-    @Future
     private Date startDate;
 
     private ExamState state = ExamState.PENDING;

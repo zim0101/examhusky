@@ -3,8 +3,7 @@ package com.app.examhusky.service;
 import com.app.examhusky.model.Account;
 import com.app.examhusky.repository.AccountRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,10 +14,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class AuthUserService {
-
-    private static final Logger log = LoggerFactory.getLogger(AuthUserService.class);
-
     private final AccountRepository accountRepository;
 
     public AuthUserService(AccountRepository accountRepository) {
@@ -50,7 +47,7 @@ public class AuthUserService {
         Set<String> userRoles = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
 
-        List<String> roles = List.of("ROLE_EXAMINER");
+        List<String> roles = List.of("ROLE, ADMIN, ROLE_EXAMINER");
 
         log.info("matches: {}", userRoles.stream().anyMatch(roles::contains));
         return userRoles.stream().anyMatch(roles::contains);

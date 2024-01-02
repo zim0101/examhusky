@@ -4,29 +4,25 @@ import com.app.examhusky.model.Candidate;
 import com.app.examhusky.model.CandidateExamAnswerRecord;
 import com.app.examhusky.model.Exam;
 import com.app.examhusky.repository.CandidateExamAnswerRecordRepository;
-import com.app.examhusky.repository.ExamRepository;
 import com.app.examhusky.security.EncryptionService;
 import jakarta.persistence.EntityNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CandidateExamAnswerRecordService {
-    private static final Logger log = LoggerFactory.getLogger(CandidateExamAnswerRecordService.class);
     private final CandidateExamAnswerRecordRepository candidateExamAnswerRecordRepository;
-    private final ExamRepository examRepository;
     private final CandidateService candidateService;
     private final EncryptionService encryptionService;
 
     public CandidateExamAnswerRecordService(CandidateExamAnswerRecordRepository candidateExamAnswerRecordRepository,
-                                            ExamRepository examRepository, CandidateService candidateService,
+                                            CandidateService candidateService,
                                             EncryptionService encryptionService) {
         this.candidateExamAnswerRecordRepository = candidateExamAnswerRecordRepository;
-        this.examRepository = examRepository;
         this.candidateService = candidateService;
         this.encryptionService = encryptionService;
     }
@@ -63,11 +59,9 @@ public class CandidateExamAnswerRecordService {
     }
 
     @Transactional
-    public void initExamPaperForAllCandidatesOfExam(Integer examId) {
-        Exam exam = examRepository.findById(examId).orElseThrow(() -> new EntityNotFoundException("Exam Not Found!"));
-        exam.getCandidates().forEach(candidate -> {
-            initExamPaperForCandidate(exam, candidate);
-        });
+    public void initExamPaperForAuthenticatedCandidate(Exam exam) {
+        Candidate candidate = candidateService.findCandidateByCurrentAuthAccount();
+        initExamPaperForCandidate(exam, candidate);
     }
 
     @Transactional

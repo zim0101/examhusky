@@ -5,6 +5,7 @@ import com.app.examhusky.service.ExamService;
 import jakarta.validation.Valid;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +47,18 @@ public class ExamEditController {
     @PutMapping("/publish")
     public String publish(@PathVariable Integer id) {
         examService.publish(id);
+        return "redirect:/exam";
+    }
+
+    @PutMapping("/start")
+    public String start(@PathVariable Integer id) {
+        examService.start(id);
+        return "redirect:/exam";
+    }
+
+    @PutMapping("/stop")
+    public String stop(@PathVariable Integer id) {
+        examService.stop(id);
         return "redirect:/exam";
     }
 
