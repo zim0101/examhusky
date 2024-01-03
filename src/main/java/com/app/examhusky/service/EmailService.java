@@ -4,18 +4,17 @@ import com.app.examhusky.dto.EmailDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
 import java.io.UnsupportedEncodingException;
 
 @Service
+@Slf4j
 public class EmailService {
 
     @Value("${examhusky.email.default.display-name}")
@@ -25,8 +24,6 @@ public class EmailService {
     private String defaultSenderAddress;
 
     private final JavaMailSender mailSender;
-
-    private static final Logger log = LoggerFactory.getLogger(EmailService.class);
 
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;

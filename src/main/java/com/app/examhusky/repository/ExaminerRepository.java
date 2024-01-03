@@ -1,5 +1,6 @@
 package com.app.examhusky.repository;
 
+import com.app.examhusky.model.Account;
 import com.app.examhusky.model.Examiner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public interface ExaminerRepository extends JpaRepository<Examiner, Integer> {
@@ -40,4 +43,12 @@ public interface ExaminerRepository extends JpaRepository<Examiner, Integer> {
         )
     """)
     Page<Examiner> findExaminersNotAssignedToExam(@Param("examId") Integer examId, Pageable pageable);
+
+    Optional<Examiner> findByAccount(Account account);
+
+    @Query("""
+        SELECT COUNT(examiner) > 0 FROM Examiner examiner\s
+        JOIN examiner.exams exam WHERE examiner.id = :examinerId AND exam.id = :examId
+        """)
+    boolean isExaminerAssignedToExam(@Param("examinerId") Integer examinerId, @Param("examId") Integer examId);
 }

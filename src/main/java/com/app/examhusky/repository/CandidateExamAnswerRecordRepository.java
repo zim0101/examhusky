@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface CandidateExamAnswerRecordRepository extends JpaRepository<CandidateExamAnswerRecord, Integer> {
     List<CandidateExamAnswerRecord> findByExamIdAndCandidateId(Integer examId, Integer candidateId);
+    CandidateExamAnswerRecord findByExamIdAndCandidateIdAndQuestionId(Integer examId, Integer candidateId,
+                                                                            Integer questionId);
+    List<CandidateExamAnswerRecord> findByExamIdAndQuestionId(Integer examId, Integer questionId);
 }

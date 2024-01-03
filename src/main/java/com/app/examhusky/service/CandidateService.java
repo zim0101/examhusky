@@ -23,6 +23,10 @@ public class CandidateService {
         this.sortingAndPaginationService = sortingAndPaginationService;
     }
 
+    public Candidate findById(Integer id) {
+        return candidateRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Candidate not found"));
+    }
+
     public Page<Candidate> findCandidatesOfExam(Integer examId,
                                                 HttpSession session,
                                                 Optional<Integer> page,
