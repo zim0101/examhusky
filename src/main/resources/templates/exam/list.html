@@ -138,7 +138,7 @@
                                 <!-- Examine -->
                                 <div class="p-2"
                                      th:if="${exam.getState() == T(com.app.examhusky.model.enums.ExamState).ENDED}">
-                                    <a class="btn btn-outline-info" th:href="@{'/exam/{id}/examine'(id=${exam.id})}">
+                                    <a class="btn btn-outline-info" th:href="@{'/examination/exam/{id}/examine'(id=${exam.id})}">
                                         <i class="fas fa-laptop-code"></i>
                                     </a>
                                 </div>

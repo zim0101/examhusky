@@ -38,6 +38,5 @@ public class CandidateExamResult {
     private Boolean published = false;
 
     @ManyToOne
-    @NotNull
     private Account decidedBy;
 }

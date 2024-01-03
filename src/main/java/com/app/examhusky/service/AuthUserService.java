@@ -47,7 +47,7 @@ public class AuthUserService {
         Set<String> userRoles = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
 
-        List<String> roles = List.of("ROLE, ADMIN, ROLE_EXAMINER");
+        List<String> roles = List.of("ROLE_ADMIN, ROLE_EXAMINER");
 
         log.info("matches: {}", userRoles.stream().anyMatch(roles::contains));
         return userRoles.stream().anyMatch(roles::contains);

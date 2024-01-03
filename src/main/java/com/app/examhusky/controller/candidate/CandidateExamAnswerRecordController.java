@@ -47,7 +47,7 @@ public class CandidateExamAnswerRecordController {
 
     @ModelAttribute("candidateExamAnswerRecordList")
     public List<CandidateExamAnswerRecord> addCandidateExamAnswerRecordListToModel(@PathVariable Integer id) {
-        return candidateExamAnswerRecordService.getQuestionAndAnswerRecordOfExamForCandidate(id);
+        return candidateExamAnswerRecordService.getQuestionAndAnswerRecordOfExamForAuthenticatedCandidate(id);
     }
 
     @GetMapping("/prepare-exam-paper")

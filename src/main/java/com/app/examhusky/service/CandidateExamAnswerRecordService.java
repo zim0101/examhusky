@@ -2,8 +2,10 @@ package com.app.examhusky.service;
 
 import com.app.examhusky.model.Candidate;
 import com.app.examhusky.model.CandidateExamAnswerRecord;
+import com.app.examhusky.model.CandidateExamResult;
 import com.app.examhusky.model.Exam;
 import com.app.examhusky.repository.CandidateExamAnswerRecordRepository;
+import com.app.examhusky.repository.CandidateExamResultRepository;
 import com.app.examhusky.security.EncryptionService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -16,32 +18,39 @@ import java.util.List;
 @Slf4j
 public class CandidateExamAnswerRecordService {
     private final CandidateExamAnswerRecordRepository candidateExamAnswerRecordRepository;
+    private final CandidateExamResultService candidateExamResultService;
     private final CandidateService candidateService;
     private final EncryptionService encryptionService;
 
     public CandidateExamAnswerRecordService(CandidateExamAnswerRecordRepository candidateExamAnswerRecordRepository,
+                                            CandidateExamResultService candidateExamResultService,
                                             CandidateService candidateService,
                                             EncryptionService encryptionService) {
         this.candidateExamAnswerRecordRepository = candidateExamAnswerRecordRepository;
+        this.candidateExamResultService = candidateExamResultService;
         this.candidateService = candidateService;
         this.encryptionService = encryptionService;
     }
 
-    public List<CandidateExamAnswerRecord> getQuestionAndAnswerRecordOfCandidateExam(Integer examId,
+    public List<CandidateExamAnswerRecord> getQuestionAndAnswerRecordOfCandidate(Integer examId,
                                                                                      Integer candidateId) {
-        return candidateExamAnswerRecordRepository.findByExamIdAndCandidateId(examId, candidateId);
+        List<CandidateExamAnswerRecord> records = candidateExamAnswerRecordRepository.findByExamIdAndCandidateId(examId,
+                candidateId);
+        return encryptCandidateExamAnswerRecordIds(records);
     }
 
-    public List<CandidateExamAnswerRecord> getQuestionAndAnswerRecordOfExamForCandidate(Integer examId) {
+    public List<CandidateExamAnswerRecord> getQuestionAndAnswerRecordOfExamForAuthenticatedCandidate(Integer examId) {
         Integer candidateId = candidateService.findCandidateByCurrentAuthAccount().getId();
         if (!candidateService.isCandidateAssignedToExam(candidateId, examId)) {
             throw new AccessDeniedException("You dont have permission to access this exam resource");
         }
 
-        List<CandidateExamAnswerRecord> records = getQuestionAndAnswerRecordOfCandidateExam(
-                examId, candidateService.findCandidateByCurrentAuthAccount().getId()
-        );
+        return getQuestionAndAnswerRecordOfCandidate(
+                examId, candidateService.findCandidateByCurrentAuthAccount().getId());
+    }
 
+    public List<CandidateExamAnswerRecord>
+    encryptCandidateExamAnswerRecordIds(List<CandidateExamAnswerRecord> records) {
         records.forEach((record) -> {
             try {
                 record.setEncryptedId(encryptionService.encrypt(record.getId().toString()));
@@ -87,5 +96,22 @@ public class CandidateExamAnswerRecordService {
             candidateExamAnswerRecord.setAnswer(answers.get(i));
             candidateExamAnswerRecordRepository.save(candidateExamAnswerRecord);
         }
+    }
+
+    @Transactional
+    public void submitMarksForCandidate(Integer examId,
+                                        Integer candidateId,
+                                        List<String> recordIdList,
+                                        List<Integer> marksList) throws EncryptionService.EncryptionException {
+        Integer totalMarks = 0;
+        for (int i = 0; i < recordIdList.size(); i++) {
+            Integer decryptedId = Integer.valueOf(encryptionService.decrypt(recordIdList.get(i)));
+            log.info("DecryptedId: {}", decryptedId);
+            CandidateExamAnswerRecord candidateExamAnswerRecord = findById(decryptedId);
+            candidateExamAnswerRecord.setMarks(marksList.get(i));
+            candidateExamAnswerRecordRepository.save(candidateExamAnswerRecord);
+            totalMarks += marksList.get(i);
+        }
+        candidateExamResultService.updateTotalMarksOfCandidateForExam(examId, candidateId, totalMarks);
     }
 }

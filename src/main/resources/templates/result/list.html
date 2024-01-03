@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:insert="layout/header"></th:block>
+<body>
+<th:block th:insert="~{layout/navbar}"></th:block>
+<div class="container-fluid">
+    <div class="row">
+        <th:block th:insert="~{layout/sidebar}"></th:block>
+        <div class="content col-sm min-vh-100">
+            <!-- content -->
+            <br>
+            <div class="content-header row align-items-center">
+                <div class="col-auto col-md-10 col-xl-10 px-sm-10">
+                    <h6>Examination</h6>
+                </div>
+            </div>
+            <hr>
+            <br>
+            <br>
+            <div class="table-responsive">
+                <table class="table" id="examTable">
+                    <thead>
+                    <tr>
+                        <th scope="col">Candidate</th>
+                        <th scope="col">Examiner</th>
+                        <th scope="col">Total Marks</th>
+                        <th scope="col">Examined</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="examResult : ${examResultList}">
+                        <td th:text="${examResult.getCandidate().getAccount().getFullName()}"></td>
+                        <td th:text="${examResult.getDecidedBy() != null ? examResult.getDecidedBy().getFullName() : 'N/A'}"></td>
+                        <td th:text="${examResult.getTotalMarks()}"></td>
+                        <td th:text="${examResult.getExamined()}"></td>
+                        <td>
+                            <div class="d-flex flex-row">
+                                <!-- Examine -->
+                                <div class="p-2"
+                                     th:if="${examResult.getExam().getState() == T(com.app.examhusky.model.enums.ExamState).ENDED}">
+                                    <a class="btn btn-outline-info"
+                                       th:href="@{'/examination/exam/{examId}/candidate/{candidateId}'(examId=${examResult.getExam().getId()}, candidateId=${examResult.getCandidate().getId()})}">
+                                        <i class="fas fa-laptop-code"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- examResultList pagination -->
+                <nav aria-label="Pagination" th:if="${examResultList.totalPages gt 0}">
+                    <ul class="pagination justify-content-center font-weight-bold">
+                        <li class="page-item" th:classappend="${examResultList.number eq 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{'/exam?page={id}'(id=${examResultList.number lt 2 ? 1 : examResultList.number})}"
+                               aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${i eq examResultList.number + 1} ? 'active'"
+                            th:each="i : ${#numbers.sequence( 1, examResultList.totalPages, 1)}">
+                            <a class="page-link"
+                               th:href="@{'/exam?page={id}'(id=${i})}"
+                               th:text="${i}"
+                               th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${examResultList.number + 1 eq examResultList.totalPages} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{'/exam?page={id}'(id=${examResultList.number + 2})}"
+                               aria-label="Next" title="Next Page" data-toggle="tooltip">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:insert="~{layout/js_urls}"></th:block>
+</body>
+</html>

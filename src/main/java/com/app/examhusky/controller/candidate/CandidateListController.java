@@ -27,10 +27,10 @@ public class CandidateListController {
     @ModelAttribute("candidateList")
     public Page<Candidate>
     addExaminerListToModel(HttpSession session,
-                                   @RequestParam("page") Optional<Integer> page,
-                                   @RequestParam("size") Optional<Integer> size,
-                                   @RequestParam("sortField") Optional<String> sortField,
-                                   @RequestParam("orderBy") Optional<String> orderBy) {
+                           @RequestParam("page") Optional<Integer> page,
+                           @RequestParam("size") Optional<Integer> size,
+                           @RequestParam("sortField") Optional<String> sortField,
+                           @RequestParam("orderBy") Optional<String> orderBy) {
 
         return accountService.sortAndPaginateActiveCandidateList(session, page, size, sortField,
                 orderBy);

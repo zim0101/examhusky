@@ -18,13 +18,14 @@
             <br>
             <br>
 
-            <div>
-                <form th:action="@{'/candidate/exam/{id}'(id=${exam.getId()})}" th:method="put">
+            <div class="table-responsive">
+                <form th:action="@{'/examination/exam/{examId}/candidate/{candidateId}'(examId=${exam.getId()}, candidateId=${candidate.getId()})}" th:method="put">
                     <table class="table">
                         <thead>
                         <tr>
                             <th>Question</th>
                             <th>Answer</th>
+                            <th>Marks</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -32,10 +33,18 @@
                             <td th:text="${record.getQuestion().getTitle()}"></td>
                             <td>
                                 <label>
-                                    <input type="hidden" th:value="${record.encryptedId}" th:name="'recordId'">
+                                    <input class="form-control" type="hidden" th:value="${record.encryptedId}"
+                                           th:name="'recordId'">
                                 </label>
                                 <label>
-                                    <textarea th:name="'answer'" cols="100" th:text="${record.answer}"></textarea>
+                                    <textarea readonly class="form-control" th:name="'answer'" cols="100"
+                                              th:text="${record.answer}"></textarea>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input class="form-control" type="number" th:value="${record.marks}"
+                                           th:name="'marks'">
                                 </label>
                             </td>
                         </tr>

@@ -1,7 +1,9 @@
 package com.app.examhusky.service;
 
+import com.app.examhusky.model.Candidate;
 import com.app.examhusky.model.Examiner;
 import com.app.examhusky.repository.ExaminerRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,10 +15,14 @@ import java.util.Optional;
 public class ExaminerService {
     private final ExaminerRepository examinerRepository;
     private final SortingAndPaginationService sortingAndPaginationService;
+    private final AuthUserService authUserService;
 
-    public ExaminerService(ExaminerRepository examinerRepository, SortingAndPaginationService sortingAndPaginationService) {
+    public ExaminerService(ExaminerRepository examinerRepository,
+                           SortingAndPaginationService sortingAndPaginationService,
+                           AuthUserService authUserService) {
         this.examinerRepository = examinerRepository;
         this.sortingAndPaginationService = sortingAndPaginationService;
+        this.authUserService = authUserService;
     }
 
     public Page<Examiner> findExaminersOfExam(Integer examId,
@@ -55,5 +61,14 @@ public class ExaminerService {
         );
 
         return examinerRepository.findExaminersNotAssignedToExam(examId, pageable);
+    }
+
+    public Examiner findExaminerByCurrentAuthAccount() {
+        return examinerRepository.findByAccount(authUserService.currentAuthAccount()).orElseThrow(() ->
+                new EntityNotFoundException("Candidate not found"));
+    }
+
+    public boolean isExaminerAssignedToExam(Integer examinerId, Integer examId) {
+        return examinerRepository.isExaminerAssignedToExam(examinerId, examId);
     }
 }
