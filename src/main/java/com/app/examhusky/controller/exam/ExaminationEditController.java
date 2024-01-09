@@ -5,6 +5,7 @@ import com.app.examhusky.model.CandidateExamAnswerRecord;
 import com.app.examhusky.model.Exam;
 import com.app.examhusky.security.EncryptionService;
 import com.app.examhusky.service.CandidateExamAnswerRecordService;
+import com.app.examhusky.service.CandidateExamResultService;
 import com.app.examhusky.service.CandidateService;
 import com.app.examhusky.service.ExamService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +21,16 @@ public class ExaminationEditController {
     private final ExamService examService;
     private final CandidateService candidateService;
     private final CandidateExamAnswerRecordService candidateExamAnswerRecordService;
+    private final CandidateExamResultService candidateExamResultService;
 
     public ExaminationEditController(ExamService examService,
                                      CandidateService candidateService,
-                                     CandidateExamAnswerRecordService candidateExamAnswerRecordService) {
+                                     CandidateExamAnswerRecordService candidateExamAnswerRecordService,
+                                     CandidateExamResultService candidateExamResultService) {
         this.examService = examService;
         this.candidateService = candidateService;
         this.candidateExamAnswerRecordService = candidateExamAnswerRecordService;
+        this.candidateExamResultService = candidateExamResultService;
     }
 
     @ModelAttribute("exam")
@@ -59,5 +63,23 @@ public class ExaminationEditController {
         candidateExamAnswerRecordService.submitMarksForCandidate(examId, candidateId, recordIds, marks);
 
         return "redirect:/examination/exam/{examId}/candidate/{candidateId}";
+    }
+
+    @PutMapping("/confirm-examination")
+    public String confirmExamination(@PathVariable Integer examId, @PathVariable Integer candidateId) {
+        candidateExamResultService.confirmExaminationForCandidate(examId, candidateId);
+        return "redirect:/examination/exam/{examId}/examine";
+    }
+
+    @PutMapping("/recommend")
+    public String recommendCandidate(@PathVariable Integer examId, @PathVariable Integer candidateId) {
+        candidateExamResultService.recommendCandidateFromExam(examId, candidateId);
+        return "redirect:/examination/exam/{examId}/examine";
+    }
+
+    @PutMapping("/not-recommend")
+    public String notRecommendCandidate(@PathVariable Integer examId, @PathVariable Integer candidateId) {
+        candidateExamResultService.notRecommendCandidateFromExam(examId, candidateId);
+        return "redirect:/examination/exam/{examId}/examine";
     }
 }
