@@ -40,8 +40,9 @@ public class Account implements Serializable {
     private String fullName;
 
     @NotNull
-    @NotEmpty
-    @Size(max = 100)
+    @NotBlank
+    @Column(unique = true)
+    @Email
     private String email;
 
     @Size(max = 128)
@@ -54,9 +55,9 @@ public class Account implements Serializable {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
-    private Boolean disabled;
+    private Boolean disabled = false;
 
-    private Boolean deleted;
+    private Boolean deleted = false;
 
     @CreationTimestamp
     private Date createdAt;
