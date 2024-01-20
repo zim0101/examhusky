@@ -4,6 +4,7 @@ import com.app.examhusky.model.Candidate;
 import com.app.examhusky.model.CandidateExamResult;
 import com.app.examhusky.model.Exam;
 import com.app.examhusky.model.Examiner;
+import com.app.examhusky.model.enums.Recommendation;
 import com.app.examhusky.repository.CandidateExamResultRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
@@ -81,5 +82,28 @@ public class CandidateExamResultService {
         candidateExamResult.setTotalMarks(totalMarks);
         candidateExamResult.setDecidedBy(authUserService.currentAuthAccount());
         candidateExamResultRepository.save(candidateExamResult);
+    }
+
+    public void confirmExaminationForCandidate(Integer examId, Integer candidateId) {
+        CandidateExamResult candidateExamResult = candidateExamResultRepository.findByExamIdAndCandidateId(examId,
+                candidateId);
+        candidateExamResult.setExamined(true);
+        candidateExamResultRepository.save(candidateExamResult);
+    }
+
+    public void recommendCandidateFromExam(Integer examId, Integer candidateId) {
+        CandidateExamResult candidateExamResult = candidateExamResultRepository.findByExamIdAndCandidateId(examId,
+                candidateId);
+        candidateExamResult.setRecommendation(Recommendation.RECOMMENDED);
+        candidateExamResultRepository.save(candidateExamResult);
+        // TODO: send email with result and congratulations
+    }
+
+    public void notRecommendCandidateFromExam(Integer examId, Integer candidateId) {
+        CandidateExamResult candidateExamResult = candidateExamResultRepository.findByExamIdAndCandidateId(examId,
+                candidateId);
+        candidateExamResult.setRecommendation(Recommendation.NOT_RECOMMENDED);
+        candidateExamResultRepository.save(candidateExamResult);
+        // TODO: send email with result and feel sorry
     }
 }

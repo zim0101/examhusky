@@ -100,6 +100,10 @@ public class AccountService {
         return accountRepository.findByEmail(email);
     }
 
+    public boolean accountExistWithEmail(String email) {
+        return findByEmail(email) != null;
+    }
+
     @Transactional
     public void saveCandidateAccount(CandidateAccountDto candidateAccountDto) {
         Account account = candidateAccountDto.getAccount();
@@ -112,6 +116,21 @@ public class AccountService {
         candidate.setAccount(account);
 
         accountRepository.save(account);
+        candidateRepository.save(candidate);
+
+        sendUserRegistrationEmail(account);
+    }
+
+    @Transactional
+    public void registerCandidateAccount(Account account) {
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        if (account.getRoles() == null) {
+            account.setRoles(Set.of(Role.CANDIDATE));
+        }
+        accountRepository.save(account);
+
+        Candidate candidate = new Candidate();
+        candidate.setAccount(account);
         candidateRepository.save(candidate);
 
         sendUserRegistrationEmail(account);

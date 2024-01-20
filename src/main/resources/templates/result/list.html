@@ -25,6 +25,7 @@
                         <th scope="col">Examiner</th>
                         <th scope="col">Total Marks</th>
                         <th scope="col">Examined</th>
+                        <th scope="col">Recommended</th>
                         <th scope="col">Action</th>
                     </tr>
                     </thead>
@@ -35,6 +36,19 @@
                         <td th:text="${examResult.getTotalMarks()}"></td>
                         <td th:text="${examResult.getExamined()}"></td>
                         <td>
+                            <div th:if="${examResult.getRecommendation() == T(com.app.examhusky.model.enums.Recommendation).NOT_DECIDED}">
+                                <span class="badge rounded-pill bg-info text-dark">NOT DECIDED YET</span>
+                            </div>
+                            <div
+                                    th:if="${examResult.getRecommendation() == T(com.app.examhusky.model.enums.Recommendation).NOT_RECOMMENDED}">
+                                <span class="badge rounded-pill bg-danger text-white">NOT RECOMMENDED</span>
+                            </div>
+                            <div
+                                    th:if="${examResult.getRecommendation() == T(com.app.examhusky.model.enums.Recommendation).RECOMMENDED}">
+                                <span class="badge rounded-pill bg-success">RECOMMENDED</span>
+                            </div>
+                        </td>
+                        <td>
                             <div class="d-flex flex-row">
                                 <!-- Examine -->
                                 <div class="p-2"
@@ -43,6 +57,36 @@
                                        th:href="@{'/examination/exam/{examId}/candidate/{candidateId}'(examId=${examResult.getExam().getId()}, candidateId=${examResult.getCandidate().getId()})}">
                                         <i class="fas fa-laptop-code"></i>
                                     </a>
+                                </div>
+                                <!-- Complete examination -->
+                                <div class="p-2"
+                                     th:if="${examResult.getExam().getState() == T(com.app.examhusky.model.enums.ExamState).ENDED && examResult.getExamined() == false}">
+                                    <form
+                                            th:action="@{'/examination/exam/{examId}/candidate/{candidateId}/confirm-examination'(examId=${examResult.getExam().getId()}, candidateId=${examResult.getCandidate().getId()})}" th:method="put"
+                                            onsubmit="return confirm('Do you really want to confirm that you examined this candidate?');">
+                                        <button type="submit" class="btn btn-outline-success">
+                                            <i class="fas fa-clipboard-check"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <!-- Recommendation -->
+                                <div class="p-2" th:if="${examResult.getExamined() == true && examResult.getRecommendation() == T(com.app.examhusky.model.enums.Recommendation).NOT_DECIDED}">
+                                    <form
+                                            th:action="@{'/examination/exam/{examId}/candidate/{candidateId}/recommend'(examId=${examResult.getExam().getId()}, candidateId=${examResult.getCandidate().getId()})}" th:method="put"
+                                            onsubmit="return confirm('Do you really want to recommend this candidate?');">
+                                        <button type="submit" class="btn btn-outline-success">
+                                            <i class="far fa-thumbs-up"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="p-2" th:if="${examResult.getExamined() == true && examResult.getRecommendation() == T(com.app.examhusky.model.enums.Recommendation).NOT_DECIDED}">
+                                    <form
+                                            th:action="@{'/examination/exam/{examId}/candidate/{candidateId}/not-recommend'(examId=${examResult.getExam().getId()}, candidateId=${examResult.getCandidate().getId()})}" th:method="put"
+                                            onsubmit="return confirm('Do you really not want to recommend this candidate?');">
+                                        <button type="submit" class="btn btn-outline-danger">
+                                            <i class="far fa-thumbs-down"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </td>

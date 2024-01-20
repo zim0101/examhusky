@@ -31,7 +31,6 @@ public class Candidate {
             inverseJoinColumns = @JoinColumn(name = "exam_id"))
     private List<Exam> exams;
 
-    @NotNull
     @Size(min = 14, max = 14, message = "Mobile number must have exactly 14 characters including " +
             "+88")
     private String mobileNumber;

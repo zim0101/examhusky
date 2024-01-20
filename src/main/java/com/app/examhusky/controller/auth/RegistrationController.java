@@ -1,6 +1,5 @@
 package com.app.examhusky.controller.auth;
 
-import com.app.examhusky.dto.CandidateAccountDto;
 import com.app.examhusky.model.Account;
 import com.app.examhusky.service.AccountService;
 import jakarta.validation.Valid;
@@ -31,35 +30,26 @@ public class RegistrationController {
     }
 
     @ModelAttribute
-    public Object addCandidateAccountDtoToModel(){
-        return new CandidateAccountDto();
+    public Account addAccountToModel() {
+        return new Account();
     }
 
     @GetMapping("/register")
-    public String showRegistrationForm(Model model){
-        Account account = new Account();
-        model.addAttribute("user", account);
+    public String showRegistrationForm() {
         return "auth/register";
     }
 
     @PostMapping("/register/save")
-    public String registration(@Valid @ModelAttribute("candidateAccountDto") CandidateAccountDto candidateAccountDto,
-                               BindingResult result,
-                               Model model){
-        Account existingAccount = accountService.findByEmail(candidateAccountDto.getAccount().getEmail());
+    public String register(@Valid @ModelAttribute Account account, BindingResult result) {
+        if (result.hasErrors()) return "auth/register";
 
-        if(existingAccount != null){
-            result.rejectValue("email", null,
-                    "There is already an account registered with the same email");
-        }
-
-        if(result.hasErrors()){
-            log.info("Error: {}", result.getAllErrors());
-            model.addAttribute("candidateAccountDto", candidateAccountDto);
+        if (accountService.accountExistWithEmail(account.getEmail())) {
+            result.rejectValue("email", null, "There is already an account registered with the same email");
             return "auth/register";
         }
 
-        accountService.saveCandidateAccount(candidateAccountDto);
+        accountService.registerCandidateAccount(account);
+
         return "redirect:/login";
     }
 }
