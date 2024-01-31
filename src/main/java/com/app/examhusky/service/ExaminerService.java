@@ -25,6 +25,10 @@ public class ExaminerService {
         this.authUserService = authUserService;
     }
 
+    public Examiner findById(Integer id) {
+        return examinerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Examiner not found!"));
+    }
+
     public Page<Examiner> findExaminersOfExam(Integer examId,
                                               HttpSession session,
                                               Optional<Integer> page,

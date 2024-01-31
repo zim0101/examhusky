@@ -23,17 +23,12 @@ public class ExamQuestionListController {
         this.questionService = questionService;
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
-
-    @ModelAttribute("exam")
+    @ModelAttribute
     public Exam addExamToModel(@PathVariable("examId") Integer id){
         return examService.findById(id);
     }
 
-    @ModelAttribute("examQuestionList")
+    @ModelAttribute
     public Page<Question>
     addExamQuestionListToModel(@PathVariable Integer examId,
                                 HttpSession session,
@@ -45,7 +40,7 @@ public class ExamQuestionListController {
         return questionService.findQuestionsOfExam(examId, session, page, size, sortField, orderBy);
     }
 
-    @ModelAttribute("availableQuestionList")
+    @ModelAttribute
     public Page<Question>
     addAvailableQuestionListToModel(@PathVariable Integer examId,
                                      HttpSession session,

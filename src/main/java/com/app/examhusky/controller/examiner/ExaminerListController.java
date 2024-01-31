@@ -25,7 +25,7 @@ public class ExaminerListController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @ModelAttribute("examinerList")
+    @ModelAttribute
     public Page<Examiner>
     addExaminerListToModel(HttpSession session,
                                    @RequestParam("page") Optional<Integer> page,

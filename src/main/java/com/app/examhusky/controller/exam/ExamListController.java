@@ -20,18 +20,12 @@ public class ExamListController {
         this.examService = examService;
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
-
-    @ModelAttribute("examList")
+    @ModelAttribute
     public Page<Exam> addExamListToModel(HttpSession session,
                                    @RequestParam("page") Optional<Integer> page,
                                    @RequestParam("size") Optional<Integer> size,
                                    @RequestParam("sortField") Optional<String> sortField,
                                    @RequestParam("orderBy") Optional<String> orderBy) {
-
         return examService.sortAndPaginateAllActiveExams(session, page,
                 size, sortField, orderBy);
     }

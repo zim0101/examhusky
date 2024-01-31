@@ -19,7 +19,7 @@ public class ExaminationListController {
         this.candidateExamResultService = candidateExamResultService;
     }
 
-    @ModelAttribute("examResultList")
+    @ModelAttribute
     public Page<CandidateExamResult>
     addExamResultListToModel(@PathVariable Integer id,
                              HttpSession session,

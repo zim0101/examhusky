@@ -3,16 +3,11 @@ package com.app.examhusky.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
 @Entity
 public class Candidate {
     @Id
@@ -25,10 +20,6 @@ public class Candidate {
     private Account account;
 
     @ManyToMany
-    @JoinTable(
-            name = "exam_candidate",
-            joinColumns = @JoinColumn(name = "candidate_id"),
-            inverseJoinColumns = @JoinColumn(name = "exam_id"))
     private List<Exam> exams;
 
     @Size(min = 14, max = 14, message = "Mobile number must have exactly 14 characters including " +
@@ -46,4 +37,92 @@ public class Candidate {
 
     @UpdateTimestamp
     private Date updatedAt;
+
+    public Candidate() {
+    }
+
+    public Candidate(Integer id, Account account, List<Exam> exams, String mobileNumber, String githubUrl,
+                     String linkedinUrl, Boolean deleted, Date createdAt, Date updatedAt) {
+        this.id = id;
+        this.account = account;
+        this.exams = exams;
+        this.mobileNumber = mobileNumber;
+        this.githubUrl = githubUrl;
+        this.linkedinUrl = linkedinUrl;
+        this.deleted = deleted;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public List<Exam> getExams() {
+        return exams;
+    }
+
+    public void setExams(List<Exam> exams) {
+        this.exams = exams;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
+    public String getGithubUrl() {
+        return githubUrl;
+    }
+
+    public void setGithubUrl(String githubUrl) {
+        this.githubUrl = githubUrl;
+    }
+
+    public String getLinkedinUrl() {
+        return linkedinUrl;
+    }
+
+    public void setLinkedinUrl(String linkedinUrl) {
+        this.linkedinUrl = linkedinUrl;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

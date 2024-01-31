@@ -25,7 +25,7 @@ public class QuestionListController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @ModelAttribute("questionList")
+    @ModelAttribute
     public Page<Question>
     addQuestionCategoryListToModel(HttpSession session,
                                    @RequestParam("page") Optional<Integer> page,

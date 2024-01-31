@@ -7,6 +7,8 @@ import com.app.examhusky.repository.*;
 import com.app.examhusky.service.rabbitmq.publisher.RabbitMQPublisher;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.Calendar;
 
 @Service
 public class ExamService {
+    private static final Logger log = LoggerFactory.getLogger(ExamService.class);
     private final AuthUserService authUserService;
     private final ExamRepository examRepository;
     private final ExaminerRepository examinerRepository;
@@ -105,22 +108,19 @@ public class ExamService {
     }
 
     @Transactional
-    public void publish(Integer id) {
-        Exam exam = findById(id);
+    public void publish(Exam exam) {
         exam.setState(ExamState.PUBLISHED);
         examRepository.save(exam);
         sendExamPublishNotificationToAll(exam);
     }
 
-    public void start(Integer id) {
-        Exam exam = findById(id);
+    public void start(Exam exam) {
         exam.setState(ExamState.ON_GOING);
         exam.setStartDate(Calendar.getInstance().getTime());
         examRepository.save(exam);
     }
 
-    public void stop(Integer id) {
-        Exam exam = findById(id);
+    public void stop(Exam exam) {
         exam.setState(ExamState.ENDED);
         examRepository.save(exam);
     }
@@ -131,10 +131,7 @@ public class ExamService {
     }
 
     @Transactional
-    public void addExaminerToExam(Integer examinerId, Integer examId) {
-        Exam exam = findById(examId);
-        Examiner examiner = examinerRepository.findById(examinerId).orElseThrow(() ->
-                new EntityNotFoundException("Examiner not found"));
+    public void addExaminerToExam(Exam exam, Examiner examiner) {
         examiner.getExams().add(exam);
         exam.getExaminers().add(examiner);
         examinerRepository.save(examiner);
@@ -194,11 +191,8 @@ public class ExamService {
     }
 
     @Transactional
-    public void addQuestionToExam(Integer questionId, Integer examId) {
-        Exam exam = findById(examId);
+    public void addQuestionToExam(Exam exam, Question question) {
         if (exam.getState().equals(ExamState.PENDING) || exam.getState().equals(ExamState.PUBLISHED)) {
-            Question question = questionRepository.findById(questionId).orElseThrow(() ->
-                    new EntityNotFoundException("Question not found"));
             question.getExams().add(exam);
             exam.getQuestions().add(question);
             questionRepository.save(question);
