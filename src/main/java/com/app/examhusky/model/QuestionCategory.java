@@ -4,9 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import java.util.Date;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 @Entity
 public class QuestionCategory {
@@ -24,16 +25,17 @@ public class QuestionCategory {
 
     private Boolean disabled = false;
 
-    @CreationTimestamp
-    private Date createdAt;
+    @CreatedDate
+    private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private Date updatedAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     public QuestionCategory() {
     }
 
-    public QuestionCategory(Integer id, String title, Boolean deleted, Boolean disabled, Date createdAt, Date updatedAt) {
+    public QuestionCategory(Integer id, String title, Boolean deleted, Boolean disabled, LocalDateTime createdAt,
+                            LocalDateTime updatedAt) {
         this.id = id;
         this.title = title;
         this.deleted = deleted;
@@ -74,19 +76,19 @@ public class QuestionCategory {
         this.disabled = disabled;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

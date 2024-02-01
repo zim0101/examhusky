@@ -41,6 +41,7 @@ public class CandidateExamAnswerRecordService {
 
     public List<CandidateExamAnswerRecord> getQuestionAndAnswerRecordOfExamForAuthenticatedCandidate(Integer examId) {
         Integer candidateId = candidateService.findCandidateByCurrentAuthAccount().getId();
+
         if (!candidateService.isCandidateAssignedToExam(candidateId, examId)) {
             throw new AccessDeniedException("You dont have permission to access this exam resource");
         }
@@ -104,6 +105,7 @@ public class CandidateExamAnswerRecordService {
                                         List<String> recordIdList,
                                         List<Integer> marksList) throws EncryptionService.EncryptionException {
         Integer totalMarks = 0;
+
         for (int i = 0; i < recordIdList.size(); i++) {
             Integer decryptedId = Integer.valueOf(encryptionService.decrypt(recordIdList.get(i)));
             log.info("DecryptedId: {}", decryptedId);
@@ -112,6 +114,7 @@ public class CandidateExamAnswerRecordService {
             candidateExamAnswerRecordRepository.save(candidateExamAnswerRecord);
             totalMarks += marksList.get(i);
         }
+
         candidateExamResultService.updateTotalMarksOfCandidateForExam(examId, candidateId, totalMarks);
     }
 }

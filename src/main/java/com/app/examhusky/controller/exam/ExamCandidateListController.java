@@ -30,9 +30,9 @@ public class ExamCandidateListController {
         return examService.findById(id);
     }
 
-    @ModelAttribute
+    @ModelAttribute("examCandidates")
     public Page<Candidate>
-    addExamCandidateListToModel(@PathVariable("examId") Integer id,
+    addExamCandidatePageToModel(@PathVariable("examId") Integer id,
                                HttpSession session,
                                @RequestParam("page") Optional<Integer> page,
                                @RequestParam("size") Optional<Integer> size,
@@ -42,9 +42,9 @@ public class ExamCandidateListController {
         return candidateService.findCandidatesOfExam(id, session, page, size, sortField, orderBy);
     }
 
-    @ModelAttribute
+    @ModelAttribute("availableExamCandidates")
     public Page<Candidate>
-    addAvailableCandidateListToModel(@PathVariable("examId") Integer id,
+    addAvailableCandidatePageToModel(@PathVariable("examId") Integer id,
                                     HttpSession session,
                                     @RequestParam("page") Optional<Integer> page,
                                     @RequestParam("size") Optional<Integer> size,

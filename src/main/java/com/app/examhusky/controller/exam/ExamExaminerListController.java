@@ -28,9 +28,9 @@ public class ExamExaminerListController {
         return examService.findById(id);
     }
 
-    @ModelAttribute
+    @ModelAttribute("examExaminers")
     public Page<Examiner>
-    addExamExaminerListToModel(@PathVariable("examId") Integer id,
+    addExamExaminerPageToModel(@PathVariable("examId") Integer id,
                                HttpSession session,
                                @RequestParam("page") Optional<Integer> page,
                                @RequestParam("size") Optional<Integer> size,
@@ -40,9 +40,9 @@ public class ExamExaminerListController {
         return examinerService.findExaminersOfExam(id, session, page, size, sortField, orderBy);
     }
 
-    @ModelAttribute
+    @ModelAttribute("availableExaminers")
     public Page<Examiner>
-    addAvailableExaminerListToModel(@PathVariable("examId") Integer id,
+    addAvailableExaminerPageToModel(@PathVariable("examId") Integer id,
                                HttpSession session,
                                @RequestParam("page") Optional<Integer> page,
                                @RequestParam("size") Optional<Integer> size,

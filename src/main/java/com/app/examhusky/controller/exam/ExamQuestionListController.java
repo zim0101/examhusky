@@ -28,9 +28,9 @@ public class ExamQuestionListController {
         return examService.findById(id);
     }
 
-    @ModelAttribute
+    @ModelAttribute("examQuestions")
     public Page<Question>
-    addExamQuestionListToModel(@PathVariable Integer examId,
+    addExamQuestionPageToModel(@PathVariable Integer examId,
                                 HttpSession session,
                                 @RequestParam("page") Optional<Integer> page,
                                 @RequestParam("size") Optional<Integer> size,
@@ -40,9 +40,9 @@ public class ExamQuestionListController {
         return questionService.findQuestionsOfExam(examId, session, page, size, sortField, orderBy);
     }
 
-    @ModelAttribute
+    @ModelAttribute("availableExamQuestions")
     public Page<Question>
-    addAvailableQuestionListToModel(@PathVariable Integer examId,
+    addAvailableQuestionPageToModel(@PathVariable Integer examId,
                                      HttpSession session,
                                      @RequestParam("page") Optional<Integer> page,
                                      @RequestParam("size") Optional<Integer> size,

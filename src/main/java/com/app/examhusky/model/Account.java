@@ -4,10 +4,10 @@ package com.app.examhusky.model;
 import com.app.examhusky.model.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -54,17 +54,18 @@ public class Account implements Serializable {
 
     private Boolean deleted = false;
 
-    @CreationTimestamp
-    private Date createdAt;
+    @CreatedDate
+    private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private Date updatedAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     public Account() {
     }
 
     public Account(Integer id, String username, String firstName, String lastName, String fullName, String email,
-                   String password, Set<Role> roles, Boolean disabled, Boolean deleted, Date createdAt, Date updatedAt) {
+                   String password, Set<Role> roles, Boolean disabled, Boolean deleted, LocalDateTime createdAt,
+                   LocalDateTime updatedAt) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
@@ -151,19 +152,19 @@ public class Account implements Serializable {
         this.deleted = deleted;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 

@@ -22,13 +22,8 @@ public class CandidateExamListController {
         this.examService = examService;
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
-
-    @ModelAttribute
-    public Page<Exam> addExamListToModel(HttpSession session,
+    @ModelAttribute("exams")
+    public Page<Exam> addExamPageToModel(HttpSession session,
                                          @RequestParam("page") Optional<Integer> page,
                                          @RequestParam("size") Optional<Integer> size,
                                          @RequestParam("sortField") Optional<String> sortField,

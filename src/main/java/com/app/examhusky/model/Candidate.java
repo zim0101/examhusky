@@ -3,9 +3,9 @@ package com.app.examhusky.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import java.util.Date;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -32,17 +32,17 @@ public class Candidate {
 
     private Boolean deleted = false;
 
-    @CreationTimestamp
-    private Date createdAt;
+    @CreatedDate
+    private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private Date updatedAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     public Candidate() {
     }
 
     public Candidate(Integer id, Account account, List<Exam> exams, String mobileNumber, String githubUrl,
-                     String linkedinUrl, Boolean deleted, Date createdAt, Date updatedAt) {
+                     String linkedinUrl, Boolean deleted, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.account = account;
         this.exams = exams;
@@ -110,19 +110,19 @@ public class Candidate {
         this.deleted = deleted;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

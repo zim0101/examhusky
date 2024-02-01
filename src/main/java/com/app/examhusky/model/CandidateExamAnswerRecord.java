@@ -2,13 +2,15 @@ package com.app.examhusky.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 public class CandidateExamAnswerRecord implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
             "candidate_exam_answer_record_generator")
@@ -37,17 +39,17 @@ public class CandidateExamAnswerRecord implements Serializable {
     @NotNull
     private Integer marks = 0;
 
-    @CreationTimestamp
-    private Date createdAt;
+    @CreatedDate
+    private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private Date updatedAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     public CandidateExamAnswerRecord() {
     }
 
     public CandidateExamAnswerRecord(Integer id, String encryptedId, Candidate candidate, Exam exam,
-                                     Question question, String answer, Integer marks, Date createdAt, Date updatedAt) {
+                                     Question question, String answer, Integer marks, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.encryptedId = encryptedId;
         this.candidate = candidate;
@@ -115,19 +117,19 @@ public class CandidateExamAnswerRecord implements Serializable {
         this.marks = marks;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

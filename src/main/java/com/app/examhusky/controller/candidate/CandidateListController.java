@@ -19,14 +19,9 @@ public class CandidateListController {
         this.accountService = accountService;
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
-
-    @ModelAttribute
+    @ModelAttribute("candidates")
     public Page<Candidate>
-    addExaminerListToModel(HttpSession session,
+    addCandidatePageToModel(HttpSession session,
                            @RequestParam("page") Optional<Integer> page,
                            @RequestParam("size") Optional<Integer> size,
                            @RequestParam("sortField") Optional<String> sortField,

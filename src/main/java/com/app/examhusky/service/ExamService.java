@@ -13,8 +13,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Calendar;
 
 @Service
 public class ExamService {
@@ -116,7 +118,7 @@ public class ExamService {
 
     public void start(Exam exam) {
         exam.setState(ExamState.ON_GOING);
-        exam.setStartDate(Calendar.getInstance().getTime());
+        exam.setStartDate(LocalDate.now());
         examRepository.save(exam);
     }
 
@@ -144,9 +146,9 @@ public class ExamService {
     public void removeExaminerFromExam(Integer examinerId, Integer examId) {
         Exam exam = findById(examId);
         if (exam.getExaminers().size() > 1 &&
-                exam.getState().equals(ExamState.PENDING) ||
+                (exam.getState().equals(ExamState.PENDING) ||
                 exam.getState().equals(ExamState.PUBLISHED) ||
-                exam.getState().equals(ExamState.ON_GOING)) {
+                exam.getState().equals(ExamState.ON_GOING))) {
             Examiner examiner = examinerRepository.findById(examinerId).orElseThrow(() ->
                     new EntityNotFoundException("Examiner not found"));
             examiner.getExams().remove(exam);
