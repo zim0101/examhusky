@@ -30,12 +30,12 @@ public class QuestionNewController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @ModelAttribute("question")
+    @ModelAttribute
     public Question addQuestionToModel(){
         return new Question();
     }
 
-    @ModelAttribute("questionCategoryList")
+    @ModelAttribute
     public List<QuestionCategory> addQuestionCategoryListToModel(){
         return questionCategoryService.findAllActive();
     }

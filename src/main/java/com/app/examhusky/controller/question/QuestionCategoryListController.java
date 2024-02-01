@@ -20,9 +20,9 @@ public class QuestionCategoryListController {
         this.questionCategoryService = questionCategoryService;
     }
 
-    @ModelAttribute("questionCategoryList")
+    @ModelAttribute("questionCategoris")
     public Page<QuestionCategory>
-    addQuestionCategoryListToModel(HttpSession session,
+    addQuestionCategoryPageToModel(HttpSession session,
                        @RequestParam("page") Optional<Integer> page,
                        @RequestParam("size") Optional<Integer> size,
                        @RequestParam("sortField") Optional<String> sortField,

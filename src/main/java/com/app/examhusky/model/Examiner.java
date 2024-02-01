@@ -2,17 +2,12 @@ package com.app.examhusky.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
 @Entity
 public class Examiner implements Serializable {
     @Id
@@ -25,10 +20,6 @@ public class Examiner implements Serializable {
     private Account account;
 
     @ManyToMany
-    @JoinTable(
-            name = "exam_examiner",
-            joinColumns = @JoinColumn(name = "examiner_id"),
-            inverseJoinColumns = @JoinColumn(name = "exam_id"))
     private List<Exam> exams;
 
     @ManyToOne
@@ -36,9 +27,79 @@ public class Examiner implements Serializable {
 
     private Boolean deleted = false;
 
-    @CreationTimestamp
-    private Date createdAt;
+    @CreatedDate
+    private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private Date updatedAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+    public Examiner() {
+    }
+
+    public Examiner(Integer id, Account account, List<Exam> exams, Designation designation, Boolean deleted,
+                    LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.account = account;
+        this.exams = exams;
+        this.designation = designation;
+        this.deleted = deleted;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public List<Exam> getExams() {
+        return exams;
+    }
+
+    public void setExams(List<Exam> exams) {
+        this.exams = exams;
+    }
+
+    public Designation getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(Designation designation) {
+        this.designation = designation;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

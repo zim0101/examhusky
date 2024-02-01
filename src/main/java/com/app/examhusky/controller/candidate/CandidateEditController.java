@@ -23,7 +23,7 @@ public class CandidateEditController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @ModelAttribute("candidate")
+    @ModelAttribute
     public Candidate addCandidateToModel(@PathVariable Integer id){
         return accountService.findCandidateById(id);
     }

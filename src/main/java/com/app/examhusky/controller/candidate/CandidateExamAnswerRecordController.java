@@ -35,17 +35,17 @@ public class CandidateExamAnswerRecordController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @ModelAttribute("candidate")
+    @ModelAttribute
     public Candidate addCandidateToModel(){
         return candidateService.findCandidateByCurrentAuthAccount();
     }
 
-    @ModelAttribute("exam")
+    @ModelAttribute
     public Exam addExamToModel(@PathVariable Integer id){
         return examService.findById(id);
     }
 
-    @ModelAttribute("candidateExamAnswerRecordList")
+    @ModelAttribute
     public List<CandidateExamAnswerRecord> addCandidateExamAnswerRecordListToModel(@PathVariable Integer id) {
         return candidateExamAnswerRecordService.getQuestionAndAnswerRecordOfExamForAuthenticatedCandidate(id);
     }

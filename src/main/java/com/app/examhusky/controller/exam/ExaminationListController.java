@@ -19,9 +19,9 @@ public class ExaminationListController {
         this.candidateExamResultService = candidateExamResultService;
     }
 
-    @ModelAttribute("examResultList")
+    @ModelAttribute("candidateExamResults")
     public Page<CandidateExamResult>
-    addExamResultListToModel(@PathVariable Integer id,
+    addExamResultPageToModel(@PathVariable Integer id,
                              HttpSession session,
                              @RequestParam("page") Optional<Integer> page,
                              @RequestParam("size") Optional<Integer> size,

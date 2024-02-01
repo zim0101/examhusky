@@ -1,7 +1,11 @@
 package com.app.examhusky.controller.exam;
 
+import com.app.examhusky.model.Exam;
+import com.app.examhusky.model.Question;
 import com.app.examhusky.service.ExamService;
+import com.app.examhusky.service.QuestionService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,14 +14,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/exam/{examId}/question/{questionId}")
 public class ExamQuestionEditController {
     private final ExamService examService;
+    private final QuestionService questionService;
 
-    public ExamQuestionEditController(ExamService examService) {
+    public ExamQuestionEditController(ExamService examService, QuestionService questionService) {
         this.examService = examService;
+        this.questionService = questionService;
+    }
+
+    @ModelAttribute
+    public Exam addExamToModel(@PathVariable Integer examId) {
+        return examService.findById(examId);
+    }
+
+    @ModelAttribute
+    public Question addQuestionToModel(@PathVariable Integer questionId) {
+        return questionService.findById(questionId);
     }
 
     @PutMapping("/add")
-    public String addQuestionToExam(@PathVariable Integer examId, @PathVariable Integer questionId) {
-        examService.addQuestionToExam(questionId, examId);
+    public String addQuestionToExam(@ModelAttribute Exam exam, @ModelAttribute Question question) {
+        examService.addQuestionToExam(exam, question);
         return "redirect:/exam/{examId}/question";
     }
 

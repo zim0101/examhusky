@@ -23,19 +23,14 @@ public class ExamExaminerListController {
         this.examinerService = examinerService;
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
-
-    @ModelAttribute("exam")
+    @ModelAttribute
     public Exam addExamToModel(@PathVariable("examId") Integer id){
         return examService.findById(id);
     }
 
-    @ModelAttribute("examExaminerList")
+    @ModelAttribute("examExaminers")
     public Page<Examiner>
-    addExamExaminerListToModel(@PathVariable("examId") Integer id,
+    addExamExaminerPageToModel(@PathVariable("examId") Integer id,
                                HttpSession session,
                                @RequestParam("page") Optional<Integer> page,
                                @RequestParam("size") Optional<Integer> size,
@@ -45,9 +40,9 @@ public class ExamExaminerListController {
         return examinerService.findExaminersOfExam(id, session, page, size, sortField, orderBy);
     }
 
-    @ModelAttribute("availableExaminerList")
+    @ModelAttribute("availableExaminers")
     public Page<Examiner>
-    addAvailableExaminerListToModel(@PathVariable("examId") Integer id,
+    addAvailableExaminerPageToModel(@PathVariable("examId") Integer id,
                                HttpSession session,
                                @RequestParam("page") Optional<Integer> page,
                                @RequestParam("size") Optional<Integer> size,
