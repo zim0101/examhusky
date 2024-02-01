@@ -25,7 +25,7 @@ public class QuestionCategoryEditController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @ModelAttribute("questionCategory")
+    @ModelAttribute
     public QuestionCategory addQuestionCategoryToModel(@PathVariable Integer id){
         return questionCategoryService.findById(id);
     }

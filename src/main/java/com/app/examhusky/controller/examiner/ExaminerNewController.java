@@ -29,12 +29,12 @@ public class ExaminerNewController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @ModelAttribute("designationList")
+    @ModelAttribute
     public List<Designation> addDesignationListToModel() {
         return designationService.findAllActive();
     }
 
-    @ModelAttribute("examinerAccountDto")
+    @ModelAttribute
     public ExaminerAccountDto addExaminerAccountDtoToModel(){
         return new ExaminerAccountDto();
     }

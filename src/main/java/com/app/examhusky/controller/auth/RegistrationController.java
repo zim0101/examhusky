@@ -3,7 +3,8 @@ package com.app.examhusky.controller.auth;
 import com.app.examhusky.model.Account;
 import com.app.examhusky.service.AccountService;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,8 +16,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-@Slf4j
 public class RegistrationController {
+
+    private static final Logger log = LoggerFactory.getLogger(RegistrationController.class);
 
     private final AccountService accountService;
 

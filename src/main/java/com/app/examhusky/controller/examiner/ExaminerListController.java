@@ -20,14 +20,9 @@ public class ExaminerListController {
         this.accountService = accountService;
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
-
-    @ModelAttribute("examinerList")
+    @ModelAttribute("examiners")
     public Page<Examiner>
-    addExaminerListToModel(HttpSession session,
+    addExaminerPageToModel(HttpSession session,
                                    @RequestParam("page") Optional<Integer> page,
                                    @RequestParam("size") Optional<Integer> size,
                                    @RequestParam("sortField") Optional<String> sortField,

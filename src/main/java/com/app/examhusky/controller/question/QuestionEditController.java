@@ -31,12 +31,12 @@ public class QuestionEditController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @ModelAttribute("question")
+    @ModelAttribute
     public Question addQuestionToModel(@PathVariable Integer id){
         return questionService.findById(id);
     }
 
-    @ModelAttribute("questionCategoryList")
+    @ModelAttribute
     public List<QuestionCategory> addQuestionCategoryListToModel(){
         return questionCategoryService.findAllActive();
     }

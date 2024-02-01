@@ -24,7 +24,7 @@ public class QuestionCategoryNewController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @ModelAttribute("questionCategory")
+    @ModelAttribute
     public Object addQuestionCategoryToModel(){
         return new QuestionCategory();
     }

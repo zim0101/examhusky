@@ -4,14 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import java.util.Date;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
-@Getter
-@Setter
+import java.time.LocalDateTime;
+
 @Entity
 public class QuestionCategory {
     @Id
@@ -28,9 +25,70 @@ public class QuestionCategory {
 
     private Boolean disabled = false;
 
-    @CreationTimestamp
-    private Date createdAt;
+    @CreatedDate
+    private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private Date updatedAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+    public QuestionCategory() {
+    }
+
+    public QuestionCategory(Integer id, String title, Boolean deleted, Boolean disabled, LocalDateTime createdAt,
+                            LocalDateTime updatedAt) {
+        this.id = id;
+        this.title = title;
+        this.deleted = deleted;
+        this.disabled = disabled;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

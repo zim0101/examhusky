@@ -23,7 +23,7 @@ public class CandidateNewController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @ModelAttribute("candidateAccountDto")
+    @ModelAttribute
     public CandidateAccountDto addCandidateAccountDtoToModel(){
         return new CandidateAccountDto();
     }

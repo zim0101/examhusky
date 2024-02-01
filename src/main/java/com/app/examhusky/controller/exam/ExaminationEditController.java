@@ -8,7 +8,8 @@ import com.app.examhusky.service.CandidateExamAnswerRecordService;
 import com.app.examhusky.service.CandidateExamResultService;
 import com.app.examhusky.service.CandidateService;
 import com.app.examhusky.service.ExamService;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +17,9 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/examination/exam/{examId}/candidate/{candidateId}")
-@Slf4j
 public class ExaminationEditController {
+
+    private static final Logger log = LoggerFactory.getLogger(ExaminationEditController.class);
     private final ExamService examService;
     private final CandidateService candidateService;
     private final CandidateExamAnswerRecordService candidateExamAnswerRecordService;
@@ -33,17 +35,17 @@ public class ExaminationEditController {
         this.candidateExamResultService = candidateExamResultService;
     }
 
-    @ModelAttribute("exam")
+    @ModelAttribute
     public Exam addExamToModel(@PathVariable Integer examId){
         return examService.findById(examId);
     }
 
-    @ModelAttribute("candidate")
+    @ModelAttribute
     public Candidate addCandidateToModel(@PathVariable Integer candidateId){
         return candidateService.findById(candidateId);
     }
 
-    @ModelAttribute("candidateExamAnswerRecordList")
+    @ModelAttribute
     public List<CandidateExamAnswerRecord> addCandidateExamAnswerRecordList(@PathVariable Integer examId,
                                                                             @PathVariable Integer candidateId) {
         return candidateExamAnswerRecordService.getQuestionAndAnswerRecordOfCandidate(examId, candidateId);

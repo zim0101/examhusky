@@ -22,12 +22,7 @@ public class ExamNewController {
         this.examService = examService;
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
-
-    @ModelAttribute("exam")
+    @ModelAttribute
     public Exam addExamToModel(){
         return new Exam();
     }

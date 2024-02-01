@@ -3,17 +3,14 @@ package com.app.examhusky.model;
 import com.app.examhusky.model.enums.ExamState;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
 @Entity
 public class Exam implements Serializable {
     @Id
@@ -28,7 +25,7 @@ public class Exam implements Serializable {
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @NotNull
-    private Date startDate;
+    private LocalDate startDate;
 
     private ExamState state = ExamState.PENDING;
 
@@ -47,9 +44,116 @@ public class Exam implements Serializable {
 
     private Boolean deleted = false;
 
-    @CreationTimestamp
-    private Date createdAt;
+    @CreatedDate
+    private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private Date updatedAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+    public Exam() {
+    }
+
+    public Exam(Integer id, String title, LocalDate startDate, ExamState state, Integer duration,
+                List<Candidate> candidates, List<Examiner> examiners, List<Question> questions, Boolean deleted,
+                LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.title = title;
+        this.startDate = startDate;
+        this.state = state;
+        this.duration = duration;
+        this.candidates = candidates;
+        this.examiners = examiners;
+        this.questions = questions;
+        this.deleted = deleted;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public ExamState getState() {
+        return state;
+    }
+
+    public void setState(ExamState state) {
+        this.state = state;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
+
+    public List<Candidate> getCandidates() {
+        return candidates;
+    }
+
+    public void setCandidates(List<Candidate> candidates) {
+        this.candidates = candidates;
+    }
+
+    public List<Examiner> getExaminers() {
+        return examiners;
+    }
+
+    public void setExaminers(List<Examiner> examiners) {
+        this.examiners = examiners;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
