@@ -38,8 +38,8 @@ public class ExamExaminerEditController {
     }
 
     @PutMapping("/remove")
-    public String removeExaminerFromExam(@PathVariable Integer examId, @PathVariable Integer examinerId) {
-        examService.removeExaminerFromExam(examinerId, examId);
+    public String removeExaminerFromExam(@ModelAttribute Exam exam, @ModelAttribute Examiner examiner) {
+        examService.removeExaminerFromExam(exam, examiner);
         return "redirect:/exam/{examId}/examiner";
     }
 }

@@ -1,6 +1,6 @@
 package com.app.examhusky.service;
 
-import com.app.examhusky.model.Candidate;
+import com.app.examhusky.model.Exam;
 import com.app.examhusky.model.Examiner;
 import com.app.examhusky.repository.ExaminerRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -8,11 +8,11 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
 public class ExaminerService {
+
     private final ExaminerRepository examinerRepository;
     private final SortingAndPaginationService sortingAndPaginationService;
     private final AuthUserService authUserService;
@@ -29,7 +29,7 @@ public class ExaminerService {
         return examinerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Examiner not found!"));
     }
 
-    public Page<Examiner> findExaminersOfExam(Integer examId,
+    public Page<Examiner> findExaminersOfExam(Exam exam,
                                               HttpSession session,
                                               Optional<Integer> page,
                                               Optional<Integer> size,
@@ -45,10 +45,10 @@ public class ExaminerService {
                 sortingAndPaginationService.getOrderByFromSession(session, orderBy)
         );
 
-        return examinerRepository.findByExams_Id(examId, pageable);
+        return examinerRepository.findByExams_Id(exam.getId(), pageable);
     }
 
-    public Page<Examiner> findAvailableExaminersForExam(Integer examId,
+    public Page<Examiner> findAvailableExaminersForExam(Exam exam,
                                               HttpSession session,
                                               Optional<Integer> page,
                                               Optional<Integer> size,
@@ -64,7 +64,7 @@ public class ExaminerService {
                 sortingAndPaginationService.getOrderByFromSession(session, orderBy)
         );
 
-        return examinerRepository.findExaminersNotAssignedToExam(examId, pageable);
+        return examinerRepository.findExaminersNotAssignedToExam(exam.getId(), pageable);
     }
 
     public Examiner findExaminerByCurrentAuthAccount() {
@@ -72,7 +72,7 @@ public class ExaminerService {
                 new EntityNotFoundException("Candidate not found"));
     }
 
-    public boolean isExaminerAssignedToExam(Integer examinerId, Integer examId) {
-        return examinerRepository.isExaminerAssignedToExam(examinerId, examId);
+    public boolean isExaminerAssignedToExam(Examiner examiner, Exam exam) {
+        return examinerRepository.isExaminerAssignedToExam(examiner.getId(), exam.getId());
     }
 }

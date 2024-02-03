@@ -1,5 +1,6 @@
 package com.app.examhusky.service;
 
+import com.app.examhusky.model.Exam;
 import com.app.examhusky.model.Question;
 import com.app.examhusky.repository.QuestionRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -7,11 +8,11 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
 public class QuestionService {
+
     private final QuestionRepository questionRepository;
     private final SortingAndPaginationService sortingAndPaginationService;
     private final AuthUserService authUserService;
@@ -44,7 +45,7 @@ public class QuestionService {
         return questionRepository.findAllByDeletedFalse(pageable);
     }
 
-    public Page<Question> findQuestionsOfExam(Integer examId,
+    public Page<Question> findQuestionsOfExam(Exam exam,
                                               HttpSession session,
                                               Optional<Integer> page,
                                               Optional<Integer> size,
@@ -60,10 +61,10 @@ public class QuestionService {
                 sortingAndPaginationService.getOrderByFromSession(session, orderBy)
         );
 
-        return questionRepository.findByExams_Id(examId, pageable);
+        return questionRepository.findByExams_Id(exam.getId(), pageable);
     }
 
-    public Page<Question> findAvailableQuestionsForExam(Integer examId,
+    public Page<Question> findAvailableQuestionsForExam(Exam exam,
                                                         HttpSession session,
                                                         Optional<Integer> page,
                                                         Optional<Integer> size,
@@ -79,7 +80,7 @@ public class QuestionService {
                 sortingAndPaginationService.getOrderByFromSession(session, orderBy)
         );
 
-        return questionRepository.findCandidatesNotAssignedToExam(examId, pageable);
+        return questionRepository.findCandidatesNotAssignedToExam(exam.getId(), pageable);
     }
 
     public void createOrUpdate(Question question) {

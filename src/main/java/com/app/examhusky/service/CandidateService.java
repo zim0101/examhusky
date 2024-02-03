@@ -1,6 +1,7 @@
 package com.app.examhusky.service;
 
 import com.app.examhusky.model.Candidate;
+import com.app.examhusky.model.Exam;
 import com.app.examhusky.repository.CandidateRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 @Service
 public class CandidateService {
+
     private final CandidateRepository candidateRepository;
     private final AuthUserService authUserService;
     private final SortingAndPaginationService sortingAndPaginationService;
@@ -27,7 +29,7 @@ public class CandidateService {
         return candidateRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Candidate not found"));
     }
 
-    public Page<Candidate> findCandidatesOfExam(Integer examId,
+    public Page<Candidate> findCandidatesOfExam(Exam exam,
                                                 HttpSession session,
                                                 Optional<Integer> page,
                                                 Optional<Integer> size,
@@ -43,10 +45,10 @@ public class CandidateService {
                 sortingAndPaginationService.getOrderByFromSession(session, orderBy)
         );
 
-        return candidateRepository.findByExams_Id(examId, pageable);
+        return candidateRepository.findByExams_Id(exam.getId(), pageable);
     }
 
-    public Page<Candidate> findAvailableCandidatesForExam(Integer examId,
+    public Page<Candidate> findAvailableCandidatesForExam(Exam exam,
                                                           HttpSession session,
                                                           Optional<Integer> page,
                                                           Optional<Integer> size,
@@ -62,7 +64,7 @@ public class CandidateService {
                 sortingAndPaginationService.getOrderByFromSession(session, orderBy)
         );
 
-        return candidateRepository.findCandidatesNotAssignedToExam(examId, pageable);
+        return candidateRepository.findCandidatesNotAssignedToExam(exam.getId(), pageable);
     }
 
     public Candidate findCandidateByCurrentAuthAccount() {
@@ -70,7 +72,7 @@ public class CandidateService {
                 new EntityNotFoundException("Candidate not found"));
     }
 
-    public boolean isCandidateAssignedToExam(Integer candidateId, Integer examId) {
-        return candidateRepository.isCandidateAssignedToExam(candidateId, examId);
+    public boolean isCandidateAssignedToExam(Candidate candidate, Exam exam) {
+        return candidateRepository.isCandidateAssignedToExam(candidate.getId(), exam.getId());
     }
 }
