@@ -85,11 +85,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="question : ${questionList}">
-                        <td th:text="${question.getTitle()}"></td>
-                        <td th:text="${question.getCategory().getTitle()}"></td>
-                        <td th:text="${question.getEditor().getFullName()}"></td>
-                        <td th:text="${question.getDisabled()}"></td>
+                    <tr th:each="question : ${questions}">
+                        <td th:text="${question.title}"></td>
+                        <td th:text="${question.category.title}"></td>
+                        <td th:text="${question.editor.fullName}"></td>
+                        <td th:text="${question.disabled}"></td>
                         <td >
                             <div class="d-flex flex-row">
                                 <div class="p-2" th:if="${question.disabled}">
@@ -135,28 +135,28 @@
                     </tr>
                     </tbody>
                 </table>
-                <!-- questionList pagination -->
-                <nav aria-label="Pagination" th:if="${questionList.totalPages gt 0}">
+                <!-- questions pagination -->
+                <nav aria-label="Pagination" th:if="${questions.totalPages gt 0}">
                     <ul class="pagination justify-content-center font-weight-bold">
-                        <li class="page-item" th:classappend="${questionList.number eq 0} ? 'disabled'">
+                        <li class="page-item" th:classappend="${questions.number eq 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{'/question?page={id}'(id=${questionList.number lt 2 ? 1 : questionList.number})}"
+                               th:href="@{'/question?page={id}'(id=${questions.number lt 2 ? 1 : questions.number})}"
                                aria-label="Previous" title="Previous Page" data-toggle="tooltip">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item"
-                            th:classappend="${i eq questionList.number + 1} ? 'active'"
-                            th:each="i : ${#numbers.sequence( 1, questionList.totalPages, 1)}">
+                            th:classappend="${i eq questions.number + 1} ? 'active'"
+                            th:each="i : ${#numbers.sequence( 1, questions.totalPages, 1)}">
                             <a class="page-link"
                                th:href="@{'/question?page={id}'(id=${i})}"
                                th:text="${i}"
                                th:title="${'Page '+ i}" data-toggle="tooltip"></a>
                         </li>
                         <li class="page-item"
-                            th:classappend="${questionList.number + 1 eq questionList.totalPages} ? 'disabled'">
+                            th:classappend="${questions.number + 1 eq questions.totalPages} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{'/question?page={id}'(id=${questionList.number + 2})}"
+                               th:href="@{'/question?page={id}'(id=${questions.number + 2})}"
                                aria-label="Next" title="Next Page" data-toggle="tooltip">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>

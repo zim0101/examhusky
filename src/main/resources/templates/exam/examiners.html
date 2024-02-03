@@ -30,10 +30,10 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td th:text="${exam.getTitle()}"></td>
-                        <td th:text="${exam.getStartDate()}"></td>
-                        <td th:text="${exam.getDuration()}"></td>
-                        <td th:text="${exam.getState()}"></td>
+                        <td th:text="${exam.title}"></td>
+                        <td th:text="${exam.startDate}"></td>
+                        <td th:text="${exam.duration}"></td>
+                        <td th:text="${exam.state}"></td>
                         <td>
                             <div class="d-flex flex-row">
                                 <!-- Examiner -->
@@ -63,7 +63,7 @@
             <hr>
             <div class="row">
                 <div class="col-4">
-                    <div id="examExaminerList">
+                    <div id="examExaminers">
                         <table class="table" id="examExaminerTable">
                             <thead>
                             <tr>
@@ -73,9 +73,9 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="examiner : ${examExaminerList}">
-                                <td th:text="${examiner.getAccount().getFullName()}"></td>
-                                <td th:text="${examiner.getDesignation().getName()}"></td>
+                            <tr th:each="examiner : ${examExaminers}">
+                                <td th:text="${examiner.account.fullName}"></td>
+                                <td th:text="${examiner.designation.name}"></td>
                                 <td>
                                     <div class="col-2">
                                         <form th:action="@{'/exam/{examId}/examiner/{examinerId}/remove'(examId=${exam.id}, examinerId=${examiner.id})}"
@@ -90,28 +90,28 @@
                             </tr>
                             </tbody>
                         </table>
-                        <!-- examExaminerList pagination -->
-                        <nav aria-label="Pagination" th:if="${examExaminerList.totalPages gt 0}">
+                        <!-- examExaminers pagination -->
+                        <nav aria-label="Pagination" th:if="${examExaminers.totalPages gt 0}">
                             <ul class="pagination justify-content-center font-weight-bold">
-                                <li class="page-item" th:classappend="${examExaminerList.number eq 0} ? 'disabled'">
+                                <li class="page-item" th:classappend="${examExaminers.number eq 0} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{'/examiner?page={id}'(id=${examExaminerList.number lt 2 ? 1 : examExaminerList.number})}"
+                                       th:href="@{'/examiner?page={id}'(id=${examExaminers.number lt 2 ? 1 : examExaminers.number})}"
                                        aria-label="Previous" title="Previous Page" data-toggle="tooltip">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                                 <li class="page-item"
-                                    th:classappend="${i eq examExaminerList.number + 1} ? 'active'"
-                                    th:each="i : ${#numbers.sequence( 1, examExaminerList.totalPages, 1)}">
+                                    th:classappend="${i eq examExaminers.number + 1} ? 'active'"
+                                    th:each="i : ${#numbers.sequence( 1, examExaminers.totalPages, 1)}">
                                     <a class="page-link"
                                        th:href="@{'/examiner?page={id}'(id=${i})}"
                                        th:text="${i}"
                                        th:title="${'Page '+ i}" data-toggle="tooltip"></a>
                                 </li>
                                 <li class="page-item"
-                                    th:classappend="${examExaminerList.number + 1 eq examExaminerList.totalPages} ? 'disabled'">
+                                    th:classappend="${examExaminers.number + 1 eq examExaminers.totalPages} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{'/examiner?page={id}'(id=${examExaminerList.number + 2})}"
+                                       th:href="@{'/examiner?page={id}'(id=${examExaminers.number + 2})}"
                                        aria-label="Next" title="Next Page" data-toggle="tooltip">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
@@ -121,8 +121,8 @@
                     </div>
                 </div>
                 <div class="col-8">
-                    <div id="availableExaminerList">
-                        <table class="table" id="availableExaminerListTable">
+                    <div id="availableExaminers">
+                        <table class="table" id="availableExaminersTable">
                             <thead>
                             <tr>
                                 <th scope="col">Name</th>
@@ -131,7 +131,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="examiner : ${availableExaminerList.getContent()}">
+                            <tr th:each="examiner : ${availableExaminers.getContent()}">
                                 <td th:text="${examiner.account.fullName}"></td>
                                 <td th:text="${examiner.designation.name}"></td>
                                 <td>
@@ -148,29 +148,29 @@
                             </tr>
                             </tbody>
                         </table>
-                        <!-- availableExaminerList pagination -->
-                        <nav aria-label="Pagination" th:if="${availableExaminerList.totalPages gt 0}">
+                        <!-- availableExaminers pagination -->
+                        <nav aria-label="Pagination" th:if="${availableExaminers.totalPages gt 0}">
                             <ul class="pagination justify-content-center font-weight-bold">
                                 <li class="page-item"
-                                    th:classappend="${availableExaminerList.number eq 0} ? 'disabled'">
+                                    th:classappend="${availableExaminers.number eq 0} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{'/examiner?page={id}'(id=${availableExaminerList.number lt 2 ? 1 : availableExaminerList.number})}"
+                                       th:href="@{'/examiner?page={id}'(id=${availableExaminers.number lt 2 ? 1 : availableExaminers.number})}"
                                        aria-label="Previous" title="Previous Page" data-toggle="tooltip">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                                 <li class="page-item"
-                                    th:classappend="${i eq availableExaminerList.number + 1} ? 'active'"
-                                    th:each="i : ${#numbers.sequence( 1, availableExaminerList.totalPages, 1)}">
+                                    th:classappend="${i eq availableExaminers.number + 1} ? 'active'"
+                                    th:each="i : ${#numbers.sequence( 1, availableExaminers.totalPages, 1)}">
                                     <a class="page-link"
                                        th:href="@{'/examiner?page={id}'(id=${i})}"
                                        th:text="${i}"
                                        th:title="${'Page '+ i}" data-toggle="tooltip"></a>
                                 </li>
                                 <li class="page-item"
-                                    th:classappend="${availableExaminerList.number + 1 eq availableExaminerList.totalPages} ? 'disabled'">
+                                    th:classappend="${availableExaminers.number + 1 eq availableExaminers.totalPages} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{'/examiner?page={id}'(id=${availableExaminerList.number + 2})}"
+                                       th:href="@{'/examiner?page={id}'(id=${availableExaminers.number + 2})}"
                                        aria-label="Next" title="Next Page" data-toggle="tooltip">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>

@@ -30,21 +30,22 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="examResult : ${examResultList}">
-                        <td th:text="${examResult.getCandidate().getAccount().getFullName()}"></td>
-                        <td th:text="${examResult.getDecidedBy() != null ? examResult.getDecidedBy().getFullName() : 'N/A'}"></td>
-                        <td th:text="${examResult.getTotalMarks()}"></td>
-                        <td th:text="${examResult.getExamined()}"></td>
+                    <tr th:each="examResult : ${candidateExamResults}">
+                        <td th:text="${examResult.candidate.account.fullName}"></td>
+                        <td th:text="${examResult.decidedBy != null ? examResult.decidedBy.fullName : 'N/A'}"></td>
+                        <td th:text="${examResult.totalMarks}"></td>
+                        <td th:text="${examResult.examined}"></td>
                         <td>
-                            <div th:if="${examResult.getRecommendation() == T(com.app.examhusky.model.enums.Recommendation).NOT_DECIDED}">
+                            <div
+                                    th:if="${examResult.recommendation == T(com.app.examhusky.model.enums.Recommendation).NOT_DECIDED}">
                                 <span class="badge rounded-pill bg-info text-dark">NOT DECIDED YET</span>
                             </div>
                             <div
-                                    th:if="${examResult.getRecommendation() == T(com.app.examhusky.model.enums.Recommendation).NOT_RECOMMENDED}">
+                                    th:if="${examResult.recommendation == T(com.app.examhusky.model.enums.Recommendation).NOT_RECOMMENDED}">
                                 <span class="badge rounded-pill bg-danger text-white">NOT RECOMMENDED</span>
                             </div>
                             <div
-                                    th:if="${examResult.getRecommendation() == T(com.app.examhusky.model.enums.Recommendation).RECOMMENDED}">
+                                    th:if="${examResult.recommendation == T(com.app.examhusky.model.enums.Recommendation).RECOMMENDED}">
                                 <span class="badge rounded-pill bg-success">RECOMMENDED</span>
                             </div>
                         </td>
@@ -52,17 +53,17 @@
                             <div class="d-flex flex-row">
                                 <!-- Examine -->
                                 <div class="p-2"
-                                     th:if="${examResult.getExam().getState() == T(com.app.examhusky.model.enums.ExamState).ENDED}">
+                                     th:if="${examResult.exam.state == T(com.app.examhusky.model.enums.ExamState).ENDED}">
                                     <a class="btn btn-outline-info"
-                                       th:href="@{'/examination/exam/{examId}/candidate/{candidateId}'(examId=${examResult.getExam().getId()}, candidateId=${examResult.getCandidate().getId()})}">
+                                       th:href="@{'/examination/exam/{examId}/candidate/{candidateId}'(examId=${examResult.exam.id}, candidateId=${examResult.candidate.id})}">
                                         <i class="fas fa-laptop-code"></i>
                                     </a>
                                 </div>
                                 <!-- Complete examination -->
                                 <div class="p-2"
-                                     th:if="${examResult.getExam().getState() == T(com.app.examhusky.model.enums.ExamState).ENDED && examResult.getExamined() == false}">
+                                     th:if="${examResult.exam.state == T(com.app.examhusky.model.enums.ExamState).ENDED && examResult.examined == false}">
                                     <form
-                                            th:action="@{'/examination/exam/{examId}/candidate/{candidateId}/confirm-examination'(examId=${examResult.getExam().getId()}, candidateId=${examResult.getCandidate().getId()})}" th:method="put"
+                                            th:action="@{'/examination/exam/{examId}/candidate/{candidateId}/confirm-examination'(examId=${examResult.exam.id}, candidateId=${examResult.candidate.id})}" th:method="put"
                                             onsubmit="return confirm('Do you really want to confirm that you examined this candidate?');">
                                         <button type="submit" class="btn btn-outline-success">
                                             <i class="fas fa-clipboard-check"></i>
@@ -70,18 +71,20 @@
                                     </form>
                                 </div>
                                 <!-- Recommendation -->
-                                <div class="p-2" th:if="${examResult.getExamined() == true && examResult.getRecommendation() == T(com.app.examhusky.model.enums.Recommendation).NOT_DECIDED}">
+                                <div class="p-2"
+                                     th:if="${examResult.examined == true && examResult.recommendation == T(com.app.examhusky.model.enums.Recommendation).NOT_DECIDED}">
                                     <form
-                                            th:action="@{'/examination/exam/{examId}/candidate/{candidateId}/recommend'(examId=${examResult.getExam().getId()}, candidateId=${examResult.getCandidate().getId()})}" th:method="put"
+                                            th:action="@{'/examination/exam/{examId}/candidate/{candidateId}/recommend'(examId=${examResult.exam.id}, candidateId=${examResult.candidate.id})}" th:method="put"
                                             onsubmit="return confirm('Do you really want to recommend this candidate?');">
                                         <button type="submit" class="btn btn-outline-success">
                                             <i class="far fa-thumbs-up"></i>
                                         </button>
                                     </form>
                                 </div>
-                                <div class="p-2" th:if="${examResult.getExamined() == true && examResult.getRecommendation() == T(com.app.examhusky.model.enums.Recommendation).NOT_DECIDED}">
+                                <div class="p-2"
+                                     th:if="${examResult.examined == true && examResult.recommendation == T(com.app.examhusky.model.enums.Recommendation).NOT_DECIDED}">
                                     <form
-                                            th:action="@{'/examination/exam/{examId}/candidate/{candidateId}/not-recommend'(examId=${examResult.getExam().getId()}, candidateId=${examResult.getCandidate().getId()})}" th:method="put"
+                                            th:action="@{'/examination/exam/{examId}/candidate/{candidateId}/not-recommend'(examId=${examResult.exam.id}, candidateId=${examResult.candidate.id})}" th:method="put"
                                             onsubmit="return confirm('Do you really not want to recommend this candidate?');">
                                         <button type="submit" class="btn btn-outline-danger">
                                             <i class="far fa-thumbs-down"></i>
@@ -93,28 +96,28 @@
                     </tr>
                     </tbody>
                 </table>
-                <!-- examResultList pagination -->
-                <nav aria-label="Pagination" th:if="${examResultList.totalPages gt 0}">
+                <!-- candidateExamResults pagination -->
+                <nav aria-label="Pagination" th:if="${candidateExamResults.totalPages gt 0}">
                     <ul class="pagination justify-content-center font-weight-bold">
-                        <li class="page-item" th:classappend="${examResultList.number eq 0} ? 'disabled'">
+                        <li class="page-item" th:classappend="${candidateExamResults.number eq 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{'/exam?page={id}'(id=${examResultList.number lt 2 ? 1 : examResultList.number})}"
+                               th:href="@{'/exam?page={id}'(id=${candidateExamResults.number lt 2 ? 1 : candidateExamResults.number})}"
                                aria-label="Previous" title="Previous Page" data-toggle="tooltip">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item"
-                            th:classappend="${i eq examResultList.number + 1} ? 'active'"
-                            th:each="i : ${#numbers.sequence( 1, examResultList.totalPages, 1)}">
+                            th:classappend="${i eq candidateExamResults.number + 1} ? 'active'"
+                            th:each="i : ${#numbers.sequence( 1, candidateExamResults.totalPages, 1)}">
                             <a class="page-link"
                                th:href="@{'/exam?page={id}'(id=${i})}"
                                th:text="${i}"
                                th:title="${'Page '+ i}" data-toggle="tooltip"></a>
                         </li>
                         <li class="page-item"
-                            th:classappend="${examResultList.number + 1 eq examResultList.totalPages} ? 'disabled'">
+                            th:classappend="${candidateExamResults.number + 1 eq candidateExamResults.totalPages} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{'/exam?page={id}'(id=${examResultList.number + 2})}"
+                               th:href="@{'/exam?page={id}'(id=${candidateExamResults.number + 2})}"
                                aria-label="Next" title="Next Page" data-toggle="tooltip">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>

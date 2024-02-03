@@ -88,26 +88,27 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="exam : ${examList}">
-                        <td th:text="${exam.getTitle()}"></td>
-                        <td th:text="${exam.getStartDate()}"></td>
-                        <td th:text="${exam.getDuration()}"></td>
+                    <tr th:each="exam : ${exams}">
+                        <td th:text="${exam.title}"></td>
+                        <td th:text="${exam.startDate}"></td>
+                        <td th:text="${exam.duration}"></td>
                         <td th:text="${exam.candidates.size()}"></td>
                         <td th:text="${exam.questions.size()}"></td>
                         <td th:text="${exam.examiners.size()}"></td>
-                        <td th:text="${exam.getState()}"></td>
+                        <td th:text="${exam.state}"></td>
                         <td>
                             <div class="d-flex flex-row">
                                 <!-- Edit -->
                                 <div class="p-2"
-                                     th:if="${exam.getState() == T(com.app.examhusky.model.enums.ExamState).PENDING
-                                     || exam.getState() == T(com.app.examhusky.model.enums.ExamState).PUBLISHED}">
+                                     th:if="${exam.state == T(com.app.examhusky.model.enums.ExamState).PENDING
+                                     || exam.state == T(com.app.examhusky.model.enums.ExamState).PUBLISHED}">
                                     <a class="btn btn-outline-info" th:href="@{'/exam/{id}'(id=${exam.id})}">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 </div>
                                 <!-- Publish -->
-                                <div class="p-2" th:if="${exam.getState() == T(com.app.examhusky.model.enums.ExamState).PENDING}">
+                                <div class="p-2"
+                                     th:if="${exam.state == T(com.app.examhusky.model.enums.ExamState).PENDING}">
                                     <form th:action="@{'/exam/{id}/publish'(id=${exam.id})}" th:method="put"
                                           onsubmit="return confirm('Do you really want to publish?');">
                                         <button type="submit" class="btn btn-outline-success">
@@ -117,7 +118,7 @@
                                 </div>
                                 <!-- Start -->
                                 <div class="p-2"
-                                     th:if="${exam.getState() == T(com.app.examhusky.model.enums.ExamState).PUBLISHED}">
+                                     th:if="${exam.state == T(com.app.examhusky.model.enums.ExamState).PUBLISHED}">
                                     <form th:action="@{'/exam/{id}/start'(id=${exam.id})}" th:method="put"
                                           onsubmit="return confirm('Do you really want to start?');">
                                         <button type="submit" class="btn btn-outline-success">
@@ -127,7 +128,7 @@
                                 </div>
                                 <!-- Stop -->
                                 <div class="p-2"
-                                     th:if="${exam.getState() == T(com.app.examhusky.model.enums.ExamState).ON_GOING}">
+                                     th:if="${exam.state == T(com.app.examhusky.model.enums.ExamState).ON_GOING}">
                                     <form th:action="@{'/exam/{id}/stop'(id=${exam.id})}" th:method="put"
                                           onsubmit="return confirm('Do you really want to delete?');">
                                         <button type="submit" class="btn btn-outline-success">
@@ -137,7 +138,7 @@
                                 </div>
                                 <!-- Examine -->
                                 <div class="p-2"
-                                     th:if="${exam.getState() == T(com.app.examhusky.model.enums.ExamState).ENDED}">
+                                     th:if="${exam.state == T(com.app.examhusky.model.enums.ExamState).ENDED}">
                                     <a class="btn btn-outline-info" th:href="@{'/examination/exam/{id}/examine'(id=${exam.id})}">
                                         <i class="fas fa-laptop-code"></i>
                                     </a>
@@ -150,23 +151,23 @@
                                 </div>
                                 <!-- Question -->
                                 <div class="p-2"
-                                     th:if="${exam.getState() == T(com.app.examhusky.model.enums.ExamState).PENDING
-                                     || exam.getState() == T(com.app.examhusky.model.enums.ExamState).PUBLISHED}">
+                                     th:if="${exam.state == T(com.app.examhusky.model.enums.ExamState).PENDING
+                                     || exam.state == T(com.app.examhusky.model.enums.ExamState).PUBLISHED}">
                                     <a class="btn btn-outline-info" th:href="@{'/exam/{id}/question'(id=${exam.id})}">
                                         <i class="fas fa-book-open"></i>
                                     </a>
                                 </div>
                                 <!-- Candidate -->
                                 <div class="p-2"
-                                     th:if="${exam.getState() == T(com.app.examhusky.model.enums.ExamState).PENDING
-                                     || exam.getState() == T(com.app.examhusky.model.enums.ExamState).PUBLISHED}">
+                                     th:if="${exam.state == T(com.app.examhusky.model.enums.ExamState).PENDING
+                                     || exam.state == T(com.app.examhusky.model.enums.ExamState).PUBLISHED}">
                                     <a class="btn btn-outline-info" th:href="@{'/exam/{id}/candidate'(id=${exam.id})}">
                                         <i class="fas fa-user-graduate"></i>
                                     </a>
                                 </div>
                                 <!-- Delete -->
                                 <div class="p-2"
-                                     th:if="${exam.getState() == T(com.app.examhusky.model.enums.ExamState).PENDING}">
+                                     th:if="${exam.state == T(com.app.examhusky.model.enums.ExamState).PENDING}">
                                     <form th:action="@{'/exam/{id}'(id=${exam.id})}" th:method="delete"
                                           onsubmit="return confirm('Do you really want to delete?');">
                                         <button type="submit" class="btn btn-outline-danger">
@@ -179,34 +180,34 @@
                     </tr>
                     </tbody>
                 </table>
-                <!-- examList pagination -->
-                <nav aria-label="Pagination" th:if="${examList.totalPages gt 0}">
-                    <ul class="pagination justify-content-center font-weight-bold">
-                        <li class="page-item" th:classappend="${examList.number eq 0} ? 'disabled'">
-                            <a class="page-link"
-                               th:href="@{'/exam?page={id}'(id=${examList.number lt 2 ? 1 : examList.number})}"
-                               aria-label="Previous" title="Previous Page" data-toggle="tooltip">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <li class="page-item"
-                            th:classappend="${i eq examList.number + 1} ? 'active'"
-                            th:each="i : ${#numbers.sequence( 1, examList.totalPages, 1)}">
-                            <a class="page-link"
-                               th:href="@{'/exam?page={id}'(id=${i})}"
-                               th:text="${i}"
-                               th:title="${'Page '+ i}" data-toggle="tooltip"></a>
-                        </li>
-                        <li class="page-item"
-                            th:classappend="${examList.number + 1 eq examList.totalPages} ? 'disabled'">
-                            <a class="page-link"
-                               th:href="@{'/exam?page={id}'(id=${examList.number + 2})}"
-                               aria-label="Next" title="Next Page" data-toggle="tooltip">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                <!-- exams pagination -->
+                <nav aria-label="Pagination" th:if="${exams.totalPages gt 0}">
+                        <ul class="pagination justify-content-center font-weight-bold">
+                            <li class="page-item" th:classappend="${exams.number eq 0} ? 'disabled'">
+                                <a class="page-link"
+                                   th:href="@{'/exam?page={id}'(id=${exams.number lt 2 ? 1 : exams.number})}"
+                                   aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item"
+                                th:classappend="${i eq exams.number + 1} ? 'active'"
+                                th:each="i : ${#numbers.sequence( 1, exams.totalPages, 1)}">
+                                <a class="page-link"
+                                   th:href="@{'/exam?page={id}'(id=${i})}"
+                                   th:text="${i}"
+                                   th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                            </li>
+                            <li class="page-item"
+                                th:classappend="${exams.number + 1 eq exams.totalPages} ? 'disabled'">
+                                <a class="page-link"
+                                   th:href="@{'/exam?page={id}'(id=${exams.number + 2})}"
+                                   aria-label="Next" title="Next Page" data-toggle="tooltip">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
             </div>
         </div>
     </div>

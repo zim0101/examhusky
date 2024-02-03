@@ -65,8 +65,8 @@
                                     th:field="*{examiner.designation}">
                                 <option label="-- Select an option --" value=""></option>
                                 <option th:each="designation : ${designationList}"
-                                        th:value="${designation.getId()}"
-                                        th:text="${designation.getName()}">
+                                        th:value="${designation.id}"
+                                        th:text="${designation.name}">
                                 </option>
                             </select>
                             <span th:if="${#fields.hasErrors('examiner.designation')}"
