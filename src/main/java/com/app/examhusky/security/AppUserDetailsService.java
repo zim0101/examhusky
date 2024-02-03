@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AppUserDetailsService implements UserDetailsService {
+
     private final AccountRepository accountRepository;
 
     public AppUserDetailsService(AccountRepository accountRepository) {
@@ -24,6 +25,7 @@ public class AppUserDetailsService implements UserDetailsService {
         if (account == null) {
             throw new UsernameNotFoundException("User " + usernameOrEmail + "is not found");
         }
+
         String[] roles = account.getRoles()
                 .stream().map(Enum::name).toArray(String[]::new);
 

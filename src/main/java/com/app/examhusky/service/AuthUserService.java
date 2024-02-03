@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,6 +65,5 @@ public class AuthUserService {
         log.info("matches: {}", userRoles.stream().anyMatch(roles::contains));
         return userRoles.stream().anyMatch(roles::contains);
     }
-
 }
 

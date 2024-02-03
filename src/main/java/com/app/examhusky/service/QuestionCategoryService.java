@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Service
 public class QuestionCategoryService {
+
     private final QuestionCategoryRepository questionCategoryRepository;
     private final SortingAndPaginationService sortingAndPaginationService;
 

@@ -142,3 +142,6 @@ VALUES (10002, 10002, 10002, 'Explain inheritance', false, false, now(), now());
 INSERT INTO question (id, category_id, editor_id, title, deleted, disabled, created_at, updated_at)
 VALUES (10003, 10004, 10002, 'Explain JVM', false, false, now(), now());
 
+INSERT INTO exam (deleted, duration, id, state, created_at, start_date, updated_at, title)
+VALUES (false, 120, 100000, 0, now(), now(), now(), 'jse ex');
+

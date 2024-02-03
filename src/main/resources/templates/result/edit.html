@@ -19,7 +19,8 @@
             <br>
 
             <div class="table-responsive">
-                <form th:action="@{'/examination/exam/{examId}/candidate/{candidateId}'(examId=${exam.getId()}, candidateId=${candidate.getId()})}" th:method="put">
+                <form
+                        th:action="@{'/examination/exam/{examId}/candidate/{candidateId}'(examId=${exam.id}, candidateId=${candidate.id})}" th:method="put">
                     <table class="table">
                         <thead>
                         <tr>
@@ -30,7 +31,7 @@
                         </thead>
                         <tbody>
                         <tr th:each="record, row : ${candidateExamAnswerRecordList}">
-                            <td th:text="${record.getQuestion().getTitle()}"></td>
+                            <td th:text="${record.question.title}"></td>
                             <td>
                                 <label>
                                     <input class="form-control" type="hidden" th:value="${record.encryptedId}"

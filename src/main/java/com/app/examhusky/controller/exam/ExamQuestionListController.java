@@ -24,32 +24,32 @@ public class ExamQuestionListController {
     }
 
     @ModelAttribute
-    public Exam addExamToModel(@PathVariable("examId") Integer id){
-        return examService.findById(id);
+    public Exam addExamToModel(@PathVariable Integer examId){
+        return examService.findById(examId);
     }
 
     @ModelAttribute("examQuestions")
     public Page<Question>
-    addExamQuestionPageToModel(@PathVariable Integer examId,
+    addExamQuestionPageToModel(@ModelAttribute Exam exam,
                                 HttpSession session,
                                 @RequestParam("page") Optional<Integer> page,
                                 @RequestParam("size") Optional<Integer> size,
                                 @RequestParam("sortField") Optional<String> sortField,
                                 @RequestParam("orderBy") Optional<String> orderBy) {
 
-        return questionService.findQuestionsOfExam(examId, session, page, size, sortField, orderBy);
+        return questionService.findQuestionsOfExam(exam, session, page, size, sortField, orderBy);
     }
 
     @ModelAttribute("availableExamQuestions")
     public Page<Question>
-    addAvailableQuestionPageToModel(@PathVariable Integer examId,
+    addAvailableQuestionPageToModel(@ModelAttribute Exam exam,
                                      HttpSession session,
                                      @RequestParam("page") Optional<Integer> page,
                                      @RequestParam("size") Optional<Integer> size,
                                      @RequestParam("sortField") Optional<String> sortField,
                                      @RequestParam("orderBy") Optional<String> orderBy) {
 
-        return questionService.findAvailableQuestionsForExam(examId, session, page, size, sortField,
+        return questionService.findAvailableQuestionsForExam(exam, session, page, size, sortField,
                 orderBy);
     }
 

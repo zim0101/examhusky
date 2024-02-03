@@ -26,32 +26,32 @@ public class ExamCandidateListController {
     }
 
     @ModelAttribute
-    public Exam addExamToModel(@PathVariable("examId") Integer id){
-        return examService.findById(id);
+    public Exam addExamToModel(@PathVariable Integer examId){
+        return examService.findById(examId);
     }
 
     @ModelAttribute("examCandidates")
     public Page<Candidate>
-    addExamCandidatePageToModel(@PathVariable("examId") Integer id,
+    addExamCandidatePageToModel(@ModelAttribute Exam exam,
                                HttpSession session,
                                @RequestParam("page") Optional<Integer> page,
                                @RequestParam("size") Optional<Integer> size,
                                @RequestParam("sortField") Optional<String> sortField,
                                @RequestParam("orderBy") Optional<String> orderBy) {
 
-        return candidateService.findCandidatesOfExam(id, session, page, size, sortField, orderBy);
+        return candidateService.findCandidatesOfExam(exam, session, page, size, sortField, orderBy);
     }
 
     @ModelAttribute("availableExamCandidates")
     public Page<Candidate>
-    addAvailableCandidatePageToModel(@PathVariable("examId") Integer id,
+    addAvailableCandidatePageToModel(@ModelAttribute Exam exam,
                                     HttpSession session,
                                     @RequestParam("page") Optional<Integer> page,
                                     @RequestParam("size") Optional<Integer> size,
                                     @RequestParam("sortField") Optional<String> sortField,
                                     @RequestParam("orderBy") Optional<String> orderBy) {
 
-        return candidateService.findAvailableCandidatesForExam(id, session, page, size, sortField,
+        return candidateService.findAvailableCandidatesForExam(exam, session, page, size, sortField,
                 orderBy);
     }
 

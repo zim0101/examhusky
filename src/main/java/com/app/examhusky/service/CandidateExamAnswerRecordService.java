@@ -32,22 +32,24 @@ public class CandidateExamAnswerRecordService {
         this.encryptionService = encryptionService;
     }
 
-    public List<CandidateExamAnswerRecord> getQuestionAndAnswerRecordOfCandidate(Integer examId,
-                                                                                     Integer candidateId) {
-        List<CandidateExamAnswerRecord> records = candidateExamAnswerRecordRepository.findByExamIdAndCandidateId(examId,
-                candidateId);
+    public List<CandidateExamAnswerRecord> getQuestionAndAnswerRecordOfCandidate(Exam exam, Candidate candidate) {
+        List<CandidateExamAnswerRecord> records = candidateExamAnswerRecordRepository.findByExamIdAndCandidateId(
+                exam.getId(),
+                candidate.getId()
+        );
+
         return encryptCandidateExamAnswerRecordIds(records);
     }
 
-    public List<CandidateExamAnswerRecord> getQuestionAndAnswerRecordOfExamForAuthenticatedCandidate(Integer examId) {
-        Integer candidateId = candidateService.findCandidateByCurrentAuthAccount().getId();
+    public List<CandidateExamAnswerRecord> getQuestionAndAnswerRecordOfExamForAuthenticatedCandidate(Exam exam) {
+        Candidate candidate = candidateService.findCandidateByCurrentAuthAccount();
 
-        if (!candidateService.isCandidateAssignedToExam(candidateId, examId)) {
+        if (!candidateService.isCandidateAssignedToExam(candidate, exam)) {
             throw new AccessDeniedException("You dont have permission to access this exam resource");
         }
 
         return getQuestionAndAnswerRecordOfCandidate(
-                examId, candidateService.findCandidateByCurrentAuthAccount().getId());
+                exam, candidateService.findCandidateByCurrentAuthAccount());
     }
 
     public List<CandidateExamAnswerRecord>
@@ -100,8 +102,8 @@ public class CandidateExamAnswerRecordService {
     }
 
     @Transactional
-    public void submitMarksForCandidate(Integer examId,
-                                        Integer candidateId,
+    public void submitMarksForCandidate(Exam exam,
+                                        Candidate candidate,
                                         List<String> recordIdList,
                                         List<Integer> marksList) throws EncryptionService.EncryptionException {
         Integer totalMarks = 0;
@@ -115,6 +117,6 @@ public class CandidateExamAnswerRecordService {
             totalMarks += marksList.get(i);
         }
 
-        candidateExamResultService.updateTotalMarksOfCandidateForExam(examId, candidateId, totalMarks);
+        candidateExamResultService.updateTotalMarksOfCandidateForExam(exam, candidate, totalMarks);
     }
 }

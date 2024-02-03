@@ -31,9 +31,9 @@
                             <select class="form-control" id="designation" th:field="*{category}">
                                 <option label="-- Select an option --" value=""></option>
                                 <option th:each="questionCategory : ${questionCategoryList}"
-                                        th:value="${questionCategory.getId()}"
-                                        th:text="${questionCategory.getTitle()}"
-                                        th:selected="${question.getCategory() != null and question.getCategory().getId() == questionCategory.getId()}">
+                                        th:value="${questionCategory.id}"
+                                        th:text="${questionCategory.title}"
+                                        th:selected="${question.category != null and question.category.id == questionCategory.id}">
                                 </option>
                             </select>
                             <span th:if="${#fields.hasErrors('category')}"

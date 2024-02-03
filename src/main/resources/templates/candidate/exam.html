@@ -75,15 +75,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="exam : ${examList}">
-                        <td th:text="${exam.getTitle()}"></td>
-                        <td th:text="${exam.getStartDate()}"></td>
-                        <td th:text="${exam.getDuration()}"></td>
+                    <tr th:each="exam : ${exams}">
+                        <td th:text="${exam.title}"></td>
+                        <td th:text="${exam.startDate}"></td>
+                        <td th:text="${exam.duration}"></td>
                         <td >
                             <div class="d-flex flex-row">
                                 <!-- Edit -->
                                 <div class="p-2"
-                                     th:if="${exam.getState() == T(com.app.examhusky.model.enums.ExamState).ON_GOING}">
+                                     th:if="${exam.state == T(com.app.examhusky.model.enums.ExamState).ON_GOING}">
                                     <a class="btn btn-outline-info"
                                        th:href="@{'/candidate/exam/{id}/prepare-exam-paper'(id=${exam.id})}">
                                         <i class="fas fa-paste"></i>
@@ -94,28 +94,28 @@
                     </tr>
                     </tbody>
                 </table>
-                <!-- examList pagination -->
-                <nav aria-label="Pagination" th:if="${examList.totalPages gt 0}">
+                <!-- exams pagination -->
+                <nav aria-label="Pagination" th:if="${exams.totalPages gt 0}">
                     <ul class="pagination justify-content-center font-weight-bold">
-                        <li class="page-item" th:classappend="${examList.number eq 0} ? 'disabled'">
+                        <li class="page-item" th:classappend="${exams.number eq 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{'/exam?page={id}'(id=${examList.number lt 2 ? 1 : examList.number})}"
+                               th:href="@{'/exam?page={id}'(id=${exams.number lt 2 ? 1 : exams.number})}"
                                aria-label="Previous" title="Previous Page" data-toggle="tooltip">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item"
-                            th:classappend="${i eq examList.number + 1} ? 'active'"
-                            th:each="i : ${#numbers.sequence( 1, examList.totalPages, 1)}">
+                            th:classappend="${i eq exams.number + 1} ? 'active'"
+                            th:each="i : ${#numbers.sequence( 1, exams.totalPages, 1)}">
                             <a class="page-link"
                                th:href="@{'/exam?page={id}'(id=${i})}"
                                th:text="${i}"
                                th:title="${'Page '+ i}" data-toggle="tooltip"></a>
                         </li>
                         <li class="page-item"
-                            th:classappend="${examList.number + 1 eq examList.totalPages} ? 'disabled'">
+                            th:classappend="${exams.number + 1 eq exams.totalPages} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{'/exam?page={id}'(id=${examList.number + 2})}"
+                               th:href="@{'/exam?page={id}'(id=${exams.number + 2})}"
                                aria-label="Next" title="Next Page" data-toggle="tooltip">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>

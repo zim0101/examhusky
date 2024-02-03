@@ -5,10 +5,8 @@ import com.app.examhusky.model.Examiner;
 import com.app.examhusky.service.ExamService;
 import com.app.examhusky.service.ExaminerService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
@@ -24,32 +22,32 @@ public class ExamExaminerListController {
     }
 
     @ModelAttribute
-    public Exam addExamToModel(@PathVariable("examId") Integer id){
-        return examService.findById(id);
+    public Exam addExamToModel(@PathVariable Integer examId){
+        return examService.findById(examId);
     }
 
     @ModelAttribute("examExaminers")
     public Page<Examiner>
-    addExamExaminerPageToModel(@PathVariable("examId") Integer id,
+    addExamExaminerPageToModel(@ModelAttribute Exam exam,
                                HttpSession session,
                                @RequestParam("page") Optional<Integer> page,
                                @RequestParam("size") Optional<Integer> size,
                                @RequestParam("sortField") Optional<String> sortField,
                                @RequestParam("orderBy") Optional<String> orderBy) {
 
-        return examinerService.findExaminersOfExam(id, session, page, size, sortField, orderBy);
+        return examinerService.findExaminersOfExam(exam, session, page, size, sortField, orderBy);
     }
 
     @ModelAttribute("availableExaminers")
     public Page<Examiner>
-    addAvailableExaminerPageToModel(@PathVariable("examId") Integer id,
+    addAvailableExaminerPageToModel(@ModelAttribute Exam exam,
                                HttpSession session,
                                @RequestParam("page") Optional<Integer> page,
                                @RequestParam("size") Optional<Integer> size,
                                @RequestParam("sortField") Optional<String> sortField,
                                @RequestParam("orderBy") Optional<String> orderBy) {
 
-        return examinerService.findAvailableExaminersForExam(id, session, page, size, sortField,
+        return examinerService.findAvailableExaminersForExam(exam, session, page, size, sortField,
                 orderBy);
     }
 

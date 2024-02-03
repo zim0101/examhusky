@@ -79,13 +79,13 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="candidate : ${candidateList}">
-                        <td th:text="${candidate.getAccount().getFirstName()}"></td>
-                        <td th:text="${candidate.getAccount().getLastName()}"></td>
-                        <td th:text="${candidate.getAccount().getDisabled() ? 'No' : 'Yes'}"></td>
+                    <tr th:each="candidate : ${candidates}">
+                        <td th:text="${candidate.account.firstName}"></td>
+                        <td th:text="${candidate.account.lastName}"></td>
+                        <td th:text="${candidate.account.disabled ? 'No' : 'Yes'}"></td>
                         <td >
                             <div class="d-flex flex-row">
-                                <div class="p-2" th:if="${candidate.getAccount().getDisabled()}">
+                                <div class="p-2" th:if="${candidate.account.disabled}">
                                     <form action="#"
                                           th:object="${candidate}"
                                           th:action="@{'/candidate/{id}/enable'(id=${candidate.id})}"
@@ -97,7 +97,7 @@
                                     </form>
                                 </div>
                                 <div class="p-2"
-                                     th:unless="${candidate.getAccount().getDisabled()}">
+                                     th:unless="${candidate.account.disabled}">
                                     <form action="#"
                                           th:object="${candidate}"
                                           th:action="@{'/candidate/{id}/disable'(id=${candidate.id})}"
@@ -129,29 +129,29 @@
                     </tr>
                     </tbody>
                 </table>
-                <!-- candidateList pagination -->
-                <nav aria-label="Pagination" th:if="${candidateList.totalPages gt 0}">
+                <!-- candidates pagination -->
+                <nav aria-label="Pagination" th:if="${candidates.totalPages gt 0}">
                     <ul class="pagination justify-content-center font-weight-bold">
                         <li class="page-item"
-                            th:classappend="${candidateList.number eq 0} ? 'disabled'">
+                            th:classappend="${candidates.number eq 0} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{'/candidate?page={id}'(id=${candidateList.number lt 2 ? 1 : candidateList.number})}"
+                               th:href="@{'/candidate?page={id}'(id=${candidates.number lt 2 ? 1 : candidates.number})}"
                                aria-label="Previous" title="Previous Page" data-toggle="tooltip">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item"
-                            th:classappend="${i eq candidateList.number + 1} ? 'active'"
-                            th:each="i : ${#numbers.sequence( 1, candidateList.totalPages, 1)}">
+                            th:classappend="${i eq candidates.number + 1} ? 'active'"
+                            th:each="i : ${#numbers.sequence( 1, candidates.totalPages, 1)}">
                             <a class="page-link"
                                th:href="@{'/candidate?page={id}'(id=${i})}"
                                th:text="${i}"
                                th:title="${'Page '+ i}" data-toggle="tooltip"></a>
                         </li>
                         <li class="page-item"
-                            th:classappend="${candidateList.number + 1 eq candidateList.totalPages} ? 'disabled'">
+                            th:classappend="${candidates.number + 1 eq candidates.totalPages} ? 'disabled'">
                             <a class="page-link"
-                               th:href="@{'/candidate?page={id}'(id=${candidateList.number + 2})}"
+                               th:href="@{'/candidate?page={id}'(id=${candidates.number + 2})}"
                                aria-label="Next" title="Next Page" data-toggle="tooltip">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>

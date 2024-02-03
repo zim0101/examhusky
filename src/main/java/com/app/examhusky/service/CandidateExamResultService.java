@@ -11,13 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.nio.file.AccessDeniedException;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CandidateExamResultService {
+
     private final CandidateExamResultRepository candidateExamResultRepository;
     private final CandidateService candidateService;
     private final ExaminerService examinerService;
@@ -36,7 +35,7 @@ public class CandidateExamResultService {
         this.sortingAndPaginationService = sortingAndPaginationService;
     }
 
-    public Page<CandidateExamResult> findAllResultByExamId(Integer examId,
+    public Page<CandidateExamResult> findAllResultByExamId(Exam exam,
                                                            HttpSession session,
                                                            Optional<Integer> page,
                                                            Optional<Integer> size,
@@ -44,7 +43,7 @@ public class CandidateExamResultService {
                                                            Optional<String> orderBy) throws AccessDeniedException {
         if (!authUserService.authUserIsAdminGroup()) {
             Examiner examiner = examinerService.findExaminerByCurrentAuthAccount();
-            if (!examinerService.isExaminerAssignedToExam(examiner.getId(), examId)) {
+            if (!examinerService.isExaminerAssignedToExam(examiner, exam)) {
                 throw new AccessDeniedException("You are not the examiner of this exam");
             }
         }
@@ -59,7 +58,7 @@ public class CandidateExamResultService {
                 sortingAndPaginationService.getOrderByFromSession(session, orderBy)
         );
 
-        return candidateExamResultRepository.findByExamId(examId, pageable);
+        return candidateExamResultRepository.findByExamId(exam.getId(), pageable);
     }
 
     @Transactional
@@ -76,32 +75,29 @@ public class CandidateExamResultService {
         candidateExamResultRepository.save(candidateExamResult);
     }
 
-    public void updateTotalMarksOfCandidateForExam(Integer examId, Integer candidateId, Integer totalMarks) {
-        CandidateExamResult candidateExamResult = candidateExamResultRepository.findByExamIdAndCandidateId(examId,
-                candidateId);
+    public void updateTotalMarksOfCandidateForExam(Exam exam, Candidate candidate, Integer totalMarks) {
+        CandidateExamResult candidateExamResult = candidateExamResultRepository.findByExamAndCandidate(exam, candidate);
+
         candidateExamResult.setTotalMarks(totalMarks);
         candidateExamResult.setDecidedBy(authUserService.currentAuthAccount());
         candidateExamResultRepository.save(candidateExamResult);
     }
 
-    public void confirmExaminationForCandidate(Integer examId, Integer candidateId) {
-        CandidateExamResult candidateExamResult = candidateExamResultRepository.findByExamIdAndCandidateId(examId,
-                candidateId);
+    public void confirmExaminationForCandidate(Exam exam, Candidate candidate) {
+        CandidateExamResult candidateExamResult = candidateExamResultRepository.findByExamAndCandidate(exam, candidate);
         candidateExamResult.setExamined(true);
         candidateExamResultRepository.save(candidateExamResult);
     }
 
-    public void recommendCandidateFromExam(Integer examId, Integer candidateId) {
-        CandidateExamResult candidateExamResult = candidateExamResultRepository.findByExamIdAndCandidateId(examId,
-                candidateId);
+    public void recommendCandidateFromExam(Exam exam, Candidate candidate) {
+        CandidateExamResult candidateExamResult = candidateExamResultRepository.findByExamAndCandidate(exam, candidate);
         candidateExamResult.setRecommendation(Recommendation.RECOMMENDED);
         candidateExamResultRepository.save(candidateExamResult);
         // TODO: send email with result and congratulations
     }
 
-    public void notRecommendCandidateFromExam(Integer examId, Integer candidateId) {
-        CandidateExamResult candidateExamResult = candidateExamResultRepository.findByExamIdAndCandidateId(examId,
-                candidateId);
+    public void notRecommendCandidateFromExam(Exam exam, Candidate candidate) {
+        CandidateExamResult candidateExamResult = candidateExamResultRepository.findByExamAndCandidate(exam, candidate);
         candidateExamResult.setRecommendation(Recommendation.NOT_RECOMMENDED);
         candidateExamResultRepository.save(candidateExamResult);
         // TODO: send email with result and feel sorry

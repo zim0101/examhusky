@@ -46,9 +46,9 @@ public class ExaminationEditController {
     }
 
     @ModelAttribute
-    public List<CandidateExamAnswerRecord> addCandidateExamAnswerRecordList(@PathVariable Integer examId,
-                                                                            @PathVariable Integer candidateId) {
-        return candidateExamAnswerRecordService.getQuestionAndAnswerRecordOfCandidate(examId, candidateId);
+    public List<CandidateExamAnswerRecord> addCandidateExamAnswerRecordList(@ModelAttribute Exam exam,
+                                                                            @ModelAttribute Candidate candidate) {
+        return candidateExamAnswerRecordService.getQuestionAndAnswerRecordOfCandidate(exam, candidate);
     }
 
     @GetMapping
@@ -58,30 +58,30 @@ public class ExaminationEditController {
 
     @PutMapping
     public String
-    updateCandidateAnswerMarks(@PathVariable Integer examId,
-                               @PathVariable Integer candidateId,
+    updateCandidateAnswerMarks(@ModelAttribute Exam exam,
+                               @ModelAttribute Candidate candidate,
                                @RequestParam("recordId") List<String> recordIds,
                                @RequestParam("marks") List<Integer> marks) throws EncryptionService.EncryptionException {
-        candidateExamAnswerRecordService.submitMarksForCandidate(examId, candidateId, recordIds, marks);
+        candidateExamAnswerRecordService.submitMarksForCandidate(exam, candidate, recordIds, marks);
 
         return "redirect:/examination/exam/{examId}/candidate/{candidateId}";
     }
 
     @PutMapping("/confirm-examination")
-    public String confirmExamination(@PathVariable Integer examId, @PathVariable Integer candidateId) {
-        candidateExamResultService.confirmExaminationForCandidate(examId, candidateId);
+    public String confirmExamination(@ModelAttribute Exam exam, @ModelAttribute Candidate candidate) {
+        candidateExamResultService.confirmExaminationForCandidate(exam, candidate);
         return "redirect:/examination/exam/{examId}/examine";
     }
 
     @PutMapping("/recommend")
-    public String recommendCandidate(@PathVariable Integer examId, @PathVariable Integer candidateId) {
-        candidateExamResultService.recommendCandidateFromExam(examId, candidateId);
+    public String recommendCandidate(@ModelAttribute Exam exam, @ModelAttribute Candidate candidate) {
+        candidateExamResultService.recommendCandidateFromExam(exam, candidate);
         return "redirect:/examination/exam/{examId}/examine";
     }
 
     @PutMapping("/not-recommend")
-    public String notRecommendCandidate(@PathVariable Integer examId, @PathVariable Integer candidateId) {
-        candidateExamResultService.notRecommendCandidateFromExam(examId, candidateId);
+    public String notRecommendCandidate(@ModelAttribute Exam exam, @ModelAttribute Candidate candidate) {
+        candidateExamResultService.notRecommendCandidateFromExam(exam, candidate);
         return "redirect:/examination/exam/{examId}/examine";
     }
 }

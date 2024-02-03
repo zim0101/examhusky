@@ -13,13 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 public class ExamService {
+
     private static final Logger log = LoggerFactory.getLogger(ExamService.class);
     private final AuthUserService authUserService;
     private final ExamRepository examRepository;
@@ -143,14 +142,12 @@ public class ExamService {
     }
 
     @Transactional
-    public void removeExaminerFromExam(Integer examinerId, Integer examId) {
-        Exam exam = findById(examId);
+    public void removeExaminerFromExam(Exam exam, Examiner examiner) {
         if (exam.getExaminers().size() > 1 &&
                 (exam.getState().equals(ExamState.PENDING) ||
                 exam.getState().equals(ExamState.PUBLISHED) ||
                 exam.getState().equals(ExamState.ON_GOING))) {
-            Examiner examiner = examinerRepository.findById(examinerId).orElseThrow(() ->
-                    new EntityNotFoundException("Examiner not found"));
+
             examiner.getExams().remove(exam);
             exam.getExaminers().remove(examiner);
             examinerRepository.save(examiner);
@@ -161,15 +158,14 @@ public class ExamService {
     }
 
     @Transactional
-    public void addCandidateToExam(Integer candidateId, Integer examId) {
-        Exam exam = findById(examId);
+    public void addCandidateToExam(Candidate candidate, Exam exam) {
         if (exam.getState().equals(ExamState.PENDING) || exam.getState().equals(ExamState.PUBLISHED)) {
-            Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() ->
-                    new EntityNotFoundException("Candidate not found"));
+
             candidate.getExams().add(exam);
             exam.getCandidates().add(candidate);
             candidateRepository.save(candidate);
             examRepository.save(exam);
+
             if (exam.getState().equals(ExamState.PUBLISHED)) {
                 sendExamInvitationEmail(candidate.getAccount(), exam);
             }
@@ -177,15 +173,14 @@ public class ExamService {
     }
 
     @Transactional
-    public void removeCandidateFromExam(Integer candidateId, Integer examId) {
-        Exam exam = findById(examId);
+    public void removeCandidateFromExam(Candidate candidate, Exam exam) {
         if (exam.getState().equals(ExamState.PENDING) || exam.getState().equals(ExamState.PUBLISHED)) {
-            Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() ->
-                    new EntityNotFoundException("Candidate not found"));
+
             candidate.getExams().remove(exam);
             exam.getCandidates().remove(candidate);
             candidateRepository.save(candidate);
             examRepository.save(exam);
+
             if (exam.getState().equals(ExamState.PUBLISHED)) {
                 sendExamInvitationCancelEmail(candidate.getAccount(), exam);
             }
@@ -203,11 +198,8 @@ public class ExamService {
     }
 
     @Transactional
-    public void removeQuestionFromExam(Integer questionId, Integer examId) {
-        Exam exam = findById(examId);
+    public void removeQuestionFromExam(Question question, Exam exam) {
         if (exam.getState().equals(ExamState.PENDING) || exam.getState().equals(ExamState.PUBLISHED)) {
-            Question question = questionRepository.findById(questionId).orElseThrow(() ->
-                    new EntityNotFoundException("Question not found"));
             question.getExams().remove(exam);
             exam.getQuestions().remove(question);
             questionRepository.save(question);

@@ -12,7 +12,7 @@
                 <div class="col-auto col-md-10 col-xl-10 px-sm-10 px-0 bg-white">
                     <h6>Edit Exam</h6>
                     <hr>
-                    <form th:object="${exam}" th:method="put">
+                    <form th:object="${exam}" th:method="post">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <div class="mb-3">
                             <label for="label" class="form-label">Title</label>
@@ -43,7 +43,7 @@
                                         th:each="state : ${T(com.app.examhusky.model.enums.ExamState).values()}"
                                         th:value="${state}"
                                         th:text="${state}"
-                                        th:selected="${exam.getState() != null and exam.getState() == state}">
+                                        th:selected="${exam.state != null and exam.state == state}">
                                 </option>
                             </select>
                             <span th:if="${#fields.hasErrors('state')}" th:errors="*{state}"></span>

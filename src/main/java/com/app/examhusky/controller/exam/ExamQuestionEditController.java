@@ -38,8 +38,8 @@ public class ExamQuestionEditController {
     }
 
     @PutMapping("/remove")
-    public String removeQuestionFromExam(@PathVariable Integer examId, @PathVariable Integer questionId) {
-        examService.removeQuestionFromExam(questionId, examId);
+    public String removeQuestionFromExam(@ModelAttribute Exam exam, @ModelAttribute Question question) {
+        examService.removeQuestionFromExam(question, exam);
         return "redirect:/exam/{examId}/question";
     }
 }

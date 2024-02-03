@@ -23,6 +23,7 @@ import java.util.Set;
 
 @Service
 public class AccountService {
+
     private final AccountRepository accountRepository;
     private final CandidateRepository candidateRepository;
     private final ExaminerRepository examinerRepository;
